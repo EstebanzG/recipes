@@ -1,29 +1,24 @@
-import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+import 'package:recipes/ui/pages/home.page.dart';
 
-import 'data/database/database.dart';
+void main() => runApp(const MyApp());
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+class MyApp extends StatelessWidget {
+  const MyApp({
+    super.key,
+  });
 
-  final database = AppDatabase();
-
-  var recipeId = await database.into(database.recipes).insert(RecipesCompanion.insert(
-    title: 'title',
-    description: 'description',
-    duration: 15,
-  ));
-
-  var ingredientId = await database.into(database.ingredients).insert(IngredientsCompanion.insert(
-    name: 'carrot',
-  ));
-
-  var recipeIngredientId =  await database.into(database.recipeIngredients).insert(RecipeIngredientsCompanion.insert(
-    idRecipe: Value(recipeId),
-    idIngredient:  Value(ingredientId),
-  ));
-
-  List<Recipe> allItems = await database.select(database.recipes).get();
-
-  print('items in database: $allItems');
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    title: 'Recipe App',
+    theme: ThemeData(
+      fontFamily: 'Roboto',
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.grey,
+      ),
+      dialogBackgroundColor: Colors.white,
+      useMaterial3: true,
+    ),
+    home: const HomePage(),
+  );
 }

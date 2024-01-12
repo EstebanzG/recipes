@@ -3,11 +3,11 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
+class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $RecipesTable(this.attachedDatabase, [this._alias]);
+  $RecipeTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idRecipeMeta =
       const VerificationMeta('idRecipe');
   @override
@@ -42,9 +42,9 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'recipes';
+  static const String $name = 'recipe';
   @override
-  VerificationContext validateIntegrity(Insertable<Recipe> instance,
+  VerificationContext validateIntegrity(Insertable<RecipeData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -78,9 +78,9 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   @override
   Set<GeneratedColumn> get $primaryKey => {idRecipe};
   @override
-  Recipe map(Map<String, dynamic> data, {String? tablePrefix}) {
+  RecipeData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Recipe(
+    return RecipeData(
       idRecipe: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id_recipe'])!,
       title: attachedDatabase.typeMapping
@@ -93,17 +93,17 @@ class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
   }
 
   @override
-  $RecipesTable createAlias(String alias) {
-    return $RecipesTable(attachedDatabase, alias);
+  $RecipeTable createAlias(String alias) {
+    return $RecipeTable(attachedDatabase, alias);
   }
 }
 
-class Recipe extends DataClass implements Insertable<Recipe> {
+class RecipeData extends DataClass implements Insertable<RecipeData> {
   final int idRecipe;
   final String title;
   final String description;
   final int duration;
-  const Recipe(
+  const RecipeData(
       {required this.idRecipe,
       required this.title,
       required this.description,
@@ -118,8 +118,8 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     return map;
   }
 
-  RecipesCompanion toCompanion(bool nullToAbsent) {
-    return RecipesCompanion(
+  RecipeCompanion toCompanion(bool nullToAbsent) {
+    return RecipeCompanion(
       idRecipe: Value(idRecipe),
       title: Value(title),
       description: Value(description),
@@ -127,10 +127,10 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     );
   }
 
-  factory Recipe.fromJson(Map<String, dynamic> json,
+  factory RecipeData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Recipe(
+    return RecipeData(
       idRecipe: serializer.fromJson<int>(json['idRecipe']),
       title: serializer.fromJson<String>(json['title']),
       description: serializer.fromJson<String>(json['description']),
@@ -148,9 +148,9 @@ class Recipe extends DataClass implements Insertable<Recipe> {
     };
   }
 
-  Recipe copyWith(
+  RecipeData copyWith(
           {int? idRecipe, String? title, String? description, int? duration}) =>
-      Recipe(
+      RecipeData(
         idRecipe: idRecipe ?? this.idRecipe,
         title: title ?? this.title,
         description: description ?? this.description,
@@ -158,7 +158,7 @@ class Recipe extends DataClass implements Insertable<Recipe> {
       );
   @override
   String toString() {
-    return (StringBuffer('Recipe(')
+    return (StringBuffer('RecipeData(')
           ..write('idRecipe: $idRecipe, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
@@ -172,25 +172,25 @@ class Recipe extends DataClass implements Insertable<Recipe> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Recipe &&
+      (other is RecipeData &&
           other.idRecipe == this.idRecipe &&
           other.title == this.title &&
           other.description == this.description &&
           other.duration == this.duration);
 }
 
-class RecipesCompanion extends UpdateCompanion<Recipe> {
+class RecipeCompanion extends UpdateCompanion<RecipeData> {
   final Value<int> idRecipe;
   final Value<String> title;
   final Value<String> description;
   final Value<int> duration;
-  const RecipesCompanion({
+  const RecipeCompanion({
     this.idRecipe = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
     this.duration = const Value.absent(),
   });
-  RecipesCompanion.insert({
+  RecipeCompanion.insert({
     this.idRecipe = const Value.absent(),
     required String title,
     required String description,
@@ -198,7 +198,7 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
   })  : title = Value(title),
         description = Value(description),
         duration = Value(duration);
-  static Insertable<Recipe> custom({
+  static Insertable<RecipeData> custom({
     Expression<int>? idRecipe,
     Expression<String>? title,
     Expression<String>? description,
@@ -212,12 +212,12 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
     });
   }
 
-  RecipesCompanion copyWith(
+  RecipeCompanion copyWith(
       {Value<int>? idRecipe,
       Value<String>? title,
       Value<String>? description,
       Value<int>? duration}) {
-    return RecipesCompanion(
+    return RecipeCompanion(
       idRecipe: idRecipe ?? this.idRecipe,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -245,7 +245,7 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
 
   @override
   String toString() {
-    return (StringBuffer('RecipesCompanion(')
+    return (StringBuffer('RecipeCompanion(')
           ..write('idRecipe: $idRecipe, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
@@ -255,12 +255,12 @@ class RecipesCompanion extends UpdateCompanion<Recipe> {
   }
 }
 
-class $IngredientsTable extends Ingredients
-    with TableInfo<$IngredientsTable, Ingredient> {
+class $IngredientTable extends Ingredient
+    with TableInfo<$IngredientTable, IngredientData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $IngredientsTable(this.attachedDatabase, [this._alias]);
+  $IngredientTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idIngredientMeta =
       const VerificationMeta('idIngredient');
   @override
@@ -282,9 +282,9 @@ class $IngredientsTable extends Ingredients
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'ingredients';
+  static const String $name = 'ingredient';
   @override
-  VerificationContext validateIntegrity(Insertable<Ingredient> instance,
+  VerificationContext validateIntegrity(Insertable<IngredientData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -306,9 +306,9 @@ class $IngredientsTable extends Ingredients
   @override
   Set<GeneratedColumn> get $primaryKey => {idIngredient};
   @override
-  Ingredient map(Map<String, dynamic> data, {String? tablePrefix}) {
+  IngredientData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Ingredient(
+    return IngredientData(
       idIngredient: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id_ingredient'])!,
       name: attachedDatabase.typeMapping
@@ -317,15 +317,15 @@ class $IngredientsTable extends Ingredients
   }
 
   @override
-  $IngredientsTable createAlias(String alias) {
-    return $IngredientsTable(attachedDatabase, alias);
+  $IngredientTable createAlias(String alias) {
+    return $IngredientTable(attachedDatabase, alias);
   }
 }
 
-class Ingredient extends DataClass implements Insertable<Ingredient> {
+class IngredientData extends DataClass implements Insertable<IngredientData> {
   final int idIngredient;
   final String name;
-  const Ingredient({required this.idIngredient, required this.name});
+  const IngredientData({required this.idIngredient, required this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -334,17 +334,17 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
     return map;
   }
 
-  IngredientsCompanion toCompanion(bool nullToAbsent) {
-    return IngredientsCompanion(
+  IngredientCompanion toCompanion(bool nullToAbsent) {
+    return IngredientCompanion(
       idIngredient: Value(idIngredient),
       name: Value(name),
     );
   }
 
-  factory Ingredient.fromJson(Map<String, dynamic> json,
+  factory IngredientData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Ingredient(
+    return IngredientData(
       idIngredient: serializer.fromJson<int>(json['idIngredient']),
       name: serializer.fromJson<String>(json['name']),
     );
@@ -358,13 +358,13 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
     };
   }
 
-  Ingredient copyWith({int? idIngredient, String? name}) => Ingredient(
+  IngredientData copyWith({int? idIngredient, String? name}) => IngredientData(
         idIngredient: idIngredient ?? this.idIngredient,
         name: name ?? this.name,
       );
   @override
   String toString() {
-    return (StringBuffer('Ingredient(')
+    return (StringBuffer('IngredientData(')
           ..write('idIngredient: $idIngredient, ')
           ..write('name: $name')
           ..write(')'))
@@ -376,23 +376,23 @@ class Ingredient extends DataClass implements Insertable<Ingredient> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Ingredient &&
+      (other is IngredientData &&
           other.idIngredient == this.idIngredient &&
           other.name == this.name);
 }
 
-class IngredientsCompanion extends UpdateCompanion<Ingredient> {
+class IngredientCompanion extends UpdateCompanion<IngredientData> {
   final Value<int> idIngredient;
   final Value<String> name;
-  const IngredientsCompanion({
+  const IngredientCompanion({
     this.idIngredient = const Value.absent(),
     this.name = const Value.absent(),
   });
-  IngredientsCompanion.insert({
+  IngredientCompanion.insert({
     this.idIngredient = const Value.absent(),
     required String name,
   }) : name = Value(name);
-  static Insertable<Ingredient> custom({
+  static Insertable<IngredientData> custom({
     Expression<int>? idIngredient,
     Expression<String>? name,
   }) {
@@ -402,9 +402,9 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
     });
   }
 
-  IngredientsCompanion copyWith(
+  IngredientCompanion copyWith(
       {Value<int>? idIngredient, Value<String>? name}) {
-    return IngredientsCompanion(
+    return IngredientCompanion(
       idIngredient: idIngredient ?? this.idIngredient,
       name: name ?? this.name,
     );
@@ -424,7 +424,7 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
 
   @override
   String toString() {
-    return (StringBuffer('IngredientsCompanion(')
+    return (StringBuffer('IngredientCompanion(')
           ..write('idIngredient: $idIngredient, ')
           ..write('name: $name')
           ..write(')'))
@@ -432,12 +432,12 @@ class IngredientsCompanion extends UpdateCompanion<Ingredient> {
   }
 }
 
-class $RecipeIngredientsTable extends RecipeIngredients
-    with TableInfo<$RecipeIngredientsTable, RecipeIngredient> {
+class $RecipeIngredientTable extends RecipeIngredient
+    with TableInfo<$RecipeIngredientTable, RecipeIngredientData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $RecipeIngredientsTable(this.attachedDatabase, [this._alias]);
+  $RecipeIngredientTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idRecipeIngredientMeta =
       const VerificationMeta('idRecipeIngredient');
   @override
@@ -453,7 +453,10 @@ class $RecipeIngredientsTable extends RecipeIngredients
   @override
   late final GeneratedColumn<int> idRecipe = GeneratedColumn<int>(
       'id_recipe', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES recipe (id_recipe)'));
   static const VerificationMeta _idIngredientMeta =
       const VerificationMeta('idIngredient');
   @override
@@ -462,7 +465,7 @@ class $RecipeIngredientsTable extends RecipeIngredients
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES ingredients (id_ingredient)'));
+          'REFERENCES ingredient (id_ingredient)'));
   @override
   List<GeneratedColumn> get $columns =>
       [idRecipeIngredient, idRecipe, idIngredient];
@@ -470,9 +473,10 @@ class $RecipeIngredientsTable extends RecipeIngredients
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'recipe_ingredients';
+  static const String $name = 'recipe_ingredient';
   @override
-  VerificationContext validateIntegrity(Insertable<RecipeIngredient> instance,
+  VerificationContext validateIntegrity(
+      Insertable<RecipeIngredientData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -498,9 +502,9 @@ class $RecipeIngredientsTable extends RecipeIngredients
   @override
   Set<GeneratedColumn> get $primaryKey => {idRecipeIngredient};
   @override
-  RecipeIngredient map(Map<String, dynamic> data, {String? tablePrefix}) {
+  RecipeIngredientData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return RecipeIngredient(
+    return RecipeIngredientData(
       idRecipeIngredient: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}id_recipe_ingredient'])!,
       idRecipe: attachedDatabase.typeMapping
@@ -511,17 +515,17 @@ class $RecipeIngredientsTable extends RecipeIngredients
   }
 
   @override
-  $RecipeIngredientsTable createAlias(String alias) {
-    return $RecipeIngredientsTable(attachedDatabase, alias);
+  $RecipeIngredientTable createAlias(String alias) {
+    return $RecipeIngredientTable(attachedDatabase, alias);
   }
 }
 
-class RecipeIngredient extends DataClass
-    implements Insertable<RecipeIngredient> {
+class RecipeIngredientData extends DataClass
+    implements Insertable<RecipeIngredientData> {
   final int idRecipeIngredient;
   final int? idRecipe;
   final int? idIngredient;
-  const RecipeIngredient(
+  const RecipeIngredientData(
       {required this.idRecipeIngredient, this.idRecipe, this.idIngredient});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -536,8 +540,8 @@ class RecipeIngredient extends DataClass
     return map;
   }
 
-  RecipeIngredientsCompanion toCompanion(bool nullToAbsent) {
-    return RecipeIngredientsCompanion(
+  RecipeIngredientCompanion toCompanion(bool nullToAbsent) {
+    return RecipeIngredientCompanion(
       idRecipeIngredient: Value(idRecipeIngredient),
       idRecipe: idRecipe == null && nullToAbsent
           ? const Value.absent()
@@ -548,10 +552,10 @@ class RecipeIngredient extends DataClass
     );
   }
 
-  factory RecipeIngredient.fromJson(Map<String, dynamic> json,
+  factory RecipeIngredientData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return RecipeIngredient(
+    return RecipeIngredientData(
       idRecipeIngredient: serializer.fromJson<int>(json['idRecipeIngredient']),
       idRecipe: serializer.fromJson<int?>(json['idRecipe']),
       idIngredient: serializer.fromJson<int?>(json['idIngredient']),
@@ -567,11 +571,11 @@ class RecipeIngredient extends DataClass
     };
   }
 
-  RecipeIngredient copyWith(
+  RecipeIngredientData copyWith(
           {int? idRecipeIngredient,
           Value<int?> idRecipe = const Value.absent(),
           Value<int?> idIngredient = const Value.absent()}) =>
-      RecipeIngredient(
+      RecipeIngredientData(
         idRecipeIngredient: idRecipeIngredient ?? this.idRecipeIngredient,
         idRecipe: idRecipe.present ? idRecipe.value : this.idRecipe,
         idIngredient:
@@ -579,7 +583,7 @@ class RecipeIngredient extends DataClass
       );
   @override
   String toString() {
-    return (StringBuffer('RecipeIngredient(')
+    return (StringBuffer('RecipeIngredientData(')
           ..write('idRecipeIngredient: $idRecipeIngredient, ')
           ..write('idRecipe: $idRecipe, ')
           ..write('idIngredient: $idIngredient')
@@ -592,27 +596,27 @@ class RecipeIngredient extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is RecipeIngredient &&
+      (other is RecipeIngredientData &&
           other.idRecipeIngredient == this.idRecipeIngredient &&
           other.idRecipe == this.idRecipe &&
           other.idIngredient == this.idIngredient);
 }
 
-class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
+class RecipeIngredientCompanion extends UpdateCompanion<RecipeIngredientData> {
   final Value<int> idRecipeIngredient;
   final Value<int?> idRecipe;
   final Value<int?> idIngredient;
-  const RecipeIngredientsCompanion({
+  const RecipeIngredientCompanion({
     this.idRecipeIngredient = const Value.absent(),
     this.idRecipe = const Value.absent(),
     this.idIngredient = const Value.absent(),
   });
-  RecipeIngredientsCompanion.insert({
+  RecipeIngredientCompanion.insert({
     this.idRecipeIngredient = const Value.absent(),
     this.idRecipe = const Value.absent(),
     this.idIngredient = const Value.absent(),
   });
-  static Insertable<RecipeIngredient> custom({
+  static Insertable<RecipeIngredientData> custom({
     Expression<int>? idRecipeIngredient,
     Expression<int>? idRecipe,
     Expression<int>? idIngredient,
@@ -625,11 +629,11 @@ class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
     });
   }
 
-  RecipeIngredientsCompanion copyWith(
+  RecipeIngredientCompanion copyWith(
       {Value<int>? idRecipeIngredient,
       Value<int?>? idRecipe,
       Value<int?>? idIngredient}) {
-    return RecipeIngredientsCompanion(
+    return RecipeIngredientCompanion(
       idRecipeIngredient: idRecipeIngredient ?? this.idRecipeIngredient,
       idRecipe: idRecipe ?? this.idRecipe,
       idIngredient: idIngredient ?? this.idIngredient,
@@ -653,7 +657,7 @@ class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
 
   @override
   String toString() {
-    return (StringBuffer('RecipeIngredientsCompanion(')
+    return (StringBuffer('RecipeIngredientCompanion(')
           ..write('idRecipeIngredient: $idRecipeIngredient, ')
           ..write('idRecipe: $idRecipe, ')
           ..write('idIngredient: $idIngredient')
@@ -664,14 +668,14 @@ class RecipeIngredientsCompanion extends UpdateCompanion<RecipeIngredient> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  late final $RecipesTable recipes = $RecipesTable(this);
-  late final $IngredientsTable ingredients = $IngredientsTable(this);
-  late final $RecipeIngredientsTable recipeIngredients =
-      $RecipeIngredientsTable(this);
+  late final $RecipeTable recipe = $RecipeTable(this);
+  late final $IngredientTable ingredient = $IngredientTable(this);
+  late final $RecipeIngredientTable recipeIngredient =
+      $RecipeIngredientTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [recipes, ingredients, recipeIngredients];
+      [recipe, ingredient, recipeIngredient];
 }
