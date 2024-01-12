@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 
 import 'data/database/database.dart';
@@ -7,11 +8,22 @@ void main() async {
 
   final database = AppDatabase();
 
-  await database.into(database.todoItems).insert(TodoItemsCompanion.insert(
-    title: 'todo: finish drift setup',
-    content: 'We can now write queries and define our own tables.',
+  var recipeId = await database.into(database.recipes).insert(RecipesCompanion.insert(
+    title: 'title',
+    description: 'description',
+    duration: 15,
   ));
-  List<TodoItem> allItems = await database.select(database.todoItems).get();
+
+  var ingredientId = await database.into(database.ingredients).insert(IngredientsCompanion.insert(
+    name: 'carrot',
+  ));
+
+  var recipeIngredientId =  await database.into(database.recipeIngredients).insert(RecipeIngredientsCompanion.insert(
+    idRecipe: Value(recipeId),
+    idIngredient:  Value(ingredientId),
+  ));
+
+  List<Recipe> allItems = await database.select(database.recipes).get();
 
   print('items in database: $allItems');
 }

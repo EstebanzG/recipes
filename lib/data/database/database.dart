@@ -9,17 +9,33 @@ import 'package:drift/drift.dart';
 
 part 'database.g.dart';
 
-class TodoItems extends Table {
-  IntColumn get id => integer().autoIncrement()();
+class Recipes extends Table {
+  IntColumn get idRecipe => integer().autoIncrement()();
 
-  TextColumn get title => text().withLength(min: 6, max: 32)();
+  TextColumn get title => text().named('Title')();
 
-  TextColumn get content => text().named('body')();
+  TextColumn get description => text().named('Description')();
 
-  IntColumn get category => integer().nullable()();
+  IntColumn get duration => integer().named('Duration')();
 }
 
-@DriftDatabase(tables: [TodoItems])
+class Ingredients extends Table {
+  IntColumn get idIngredient => integer().autoIncrement()();
+
+  TextColumn get name => text().named('Name')();
+}
+
+class RecipeIngredients extends Table {
+  IntColumn get idRecipeIngredient => integer().autoIncrement()();
+
+  IntColumn get idRecipe =>
+      integer().nullable().references(Recipe, #idRecipe)();
+
+  IntColumn get idIngredient =>
+      integer().nullable().references(Ingredients, #idIngredient)();
+}
+
+@DriftDatabase(tables: [Recipes, Ingredients, RecipeIngredients])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
