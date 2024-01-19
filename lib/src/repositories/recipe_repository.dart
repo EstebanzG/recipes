@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:recipes/data/database/database.dart';
+import 'package:recipes/data/dto/recipe_detail_dto.dart';
 import 'package:recipes/src/repositories/recipe_repository_interface.dart';
 
 class RecipeRepository implements IRecipeRepository {
-  AppDatabase database = AppDatabase();
 
   @override
   Future<List<RecipeData>> getAll() {
@@ -21,8 +21,15 @@ class RecipeRepository implements IRecipeRepository {
   }
 
   @override
-  Future<void> insert(RecipeData recipe) {
-    throw UnimplementedError();
+  Future<int> insert(RecipeData recipe) async {
+    var recipeId =
+        await database.into(database.recipe).insert(RecipeCompanion.insert(
+              title: recipe.title,
+              description: recipe.description,
+              duration: recipe.duration,
+            ));
+
+    return recipeId;
   }
 
   @override
@@ -30,12 +37,13 @@ class RecipeRepository implements IRecipeRepository {
     throw UnimplementedError();
   }
 
-  Future<void> insertTestValues() async {
+  @override
+  Future<void> insertRecipeWithIngredients(RecipeDetailDto recipe) async {
     var recipeId =
         await database.into(database.recipe).insert(RecipeCompanion.insert(
-              title: 'title',
-              description: 'description',
-              duration: 15,
+              title: recipe.title,
+              description: recipe.description,
+              duration: recipe.duration,
             ));
 
     var ingredientId = await database

@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../data/database/database.dart';
 import 'meal_card.widget.dart';
 
 class OtherRecipes extends StatelessWidget {
+
+  final List<RecipeData> recipes;
+
   const OtherRecipes({
     super.key,
+    required this.recipes,
   });
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        Padding(
+        const Padding(
           padding: EdgeInsets.only(top: 20, bottom: 10),
           child: Column(
             children: [
@@ -49,7 +54,7 @@ class OtherRecipes extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 350,
           height: 50,
           child: TextField(
@@ -66,24 +71,14 @@ class OtherRecipes extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(top: 20),
           child: Column(
             children: [
-              MealCard(),
-              SizedBox(
-                height: 20,
-              ),
-              MealCard(),
-              SizedBox(
-                height: 20,
-              ),
-              MealCard(),
-              SizedBox(
-                height: 20,
-              ),
-              MealCard(),
-              SizedBox(
-                height: 20,
+              for (var recipe in recipes) Column (
+                children: [
+                  MealCard(recipe: recipe),
+                  const SizedBox(height: 20)
+                ],
               )
             ],
           ),

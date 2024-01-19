@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:recipes/ui/pages/form.page.dart';
+
 
 class Header extends StatelessWidget {
   const Header({
@@ -7,13 +9,13 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Flex(
         direction: Axis.horizontal,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text.rich(TextSpan(children: [
+          const Text.rich(TextSpan(children: [
             TextSpan(
               text: 'Bonjour, ',
               style: TextStyle(
@@ -43,11 +45,19 @@ class Header extends StatelessWidget {
               ),
             ),
           ])),
-          Icon(
-            Icons.settings,
-            color: Colors.black,
-            size: 35.0,
-            semanticLabel: 'Settings button',
+          IconButton(
+            icon: const Icon(
+              Icons.add_circle_outline,
+              color: Colors.black,
+              size: 35.0,
+              semanticLabel: 'Settings button',
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const FormPage(recipe: null)),
+              );
+            },
           ),
         ],
       ),

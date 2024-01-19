@@ -13,6 +13,8 @@ import '../models/recipe_ingredient.dart';
 
 part 'database.g.dart';
 
+final database = AppDatabase();
+
 @DriftDatabase(tables: [Recipe, Ingredient, RecipeIngredient])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
