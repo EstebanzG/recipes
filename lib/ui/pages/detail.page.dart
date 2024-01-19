@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/data/database/database.dart';
 
+import '../cubit/recipes.cubit.dart';
 import 'form.page.dart';
 
 class DetailPage extends StatelessWidget {
@@ -46,7 +48,7 @@ class DetailPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => FormPage(recipe: recipe)),
+                                builder: (context) => FormPage(recipe: recipe, recipesCubit: BlocProvider.of<RecipesCubit>(context))),
                           );
                         },
                         icon: const Icon(

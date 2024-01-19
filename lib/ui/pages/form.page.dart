@@ -9,10 +9,11 @@ import '../cubit/recipes.cubit.dart';
 
 class FormPage extends StatefulWidget {
   final RecipeData? recipe;
+  final RecipesCubit recipesCubit;
 
   const FormPage({
     super.key,
-    this.recipe,
+    this.recipe, required this.recipesCubit,
   });
 
   @override
@@ -27,7 +28,7 @@ class _FormPageState extends State<FormPage> {
   RecipeService recipeService = RecipeService();
   final _formKey = GlobalKey<FormState>();
 
-  void addNewRecipe() {
+  void addNewRecipe(BuildContext context) {
     var recipe = RecipeDetailDto(
       null,
       nameInputController.text,
@@ -36,7 +37,7 @@ class _FormPageState extends State<FormPage> {
       [],
     );
     recipeService.createNewRecipe(recipe);
-    BlocProvider.of<RecipesCubit>(context).addNewRecipe(recipe);
+    widget.recipesCubit.addNewRecipe(recipe);
   }
 
   @override
@@ -140,7 +141,7 @@ class _FormPageState extends State<FormPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        addNewRecipe();
+                        addNewRecipe(context);
                       },
                       child: const Text('Submit'),
                     ),

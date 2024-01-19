@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/ui/pages/form.page.dart';
+
+import '../cubit/recipes.cubit.dart';
 
 
 class Header extends StatelessWidget {
@@ -55,7 +58,7 @@ class Header extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const FormPage(recipe: null)),
+                MaterialPageRoute(builder: (_) => FormPage(recipe: null, recipesCubit: BlocProvider.of<RecipesCubit>(context))),
               );
             },
           ),
