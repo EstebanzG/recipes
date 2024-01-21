@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:recipes/data/database/database.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
+import '../cubit/recipes.cubit.dart';
 import 'meal_card.widget.dart';
 
 class FavoriteRecipes extends StatelessWidget {
-
-  final List<RecipeData> recipes;
+  final List<RecipeDetailDto> recipes;
 
   const FavoriteRecipes({
     super.key,
@@ -56,9 +57,10 @@ class FavoriteRecipes extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: recipes.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Row(
-                  children: [
-                    MealCard(recipe: recipes[index]),
+                  return Row(children: [
+                    MealCard(
+                        recipe: recipes[index],
+                        recipesCubit: BlocProvider.of<RecipesCubit>(context)),
                     const SizedBox(width: 20)
                   ]);
                 },

@@ -9,13 +9,12 @@ import 'package:drift/drift.dart';
 
 import '../models/ingredient.dart';
 import '../models/recipe.dart';
-import '../models/recipe_ingredient.dart';
 
 part 'database.g.dart';
 
 final database = AppDatabase();
 
-@DriftDatabase(tables: [Recipe, Ingredient, RecipeIngredient])
+@DriftDatabase(tables: [Recipe, Ingredient])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

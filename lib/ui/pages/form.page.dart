@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recipes/data/database/database.dart';
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
+import '../../data/dto/ingredient_detail_dto.dart';
+import '../../data/dto/recipe_detail_dto.dart';
 import '../../src/services/recipe_service.dart';
 import '../cubit/recipes.cubit.dart';
+import '../widget/ingredient_form.widget.dart';
 
 class FormPage extends StatefulWidget {
-  final RecipeData? recipe;
+  final RecipeDetailDto? recipe;
   final RecipesCubit recipesCubit;
 
   const FormPage({
     super.key,
-    this.recipe, required this.recipesCubit,
+    this.recipe,
+    required this.recipesCubit,
   });
 
   @override
@@ -21,23 +22,66 @@ class FormPage extends StatefulWidget {
 }
 
 class _FormPageState extends State<FormPage> {
-  final nameInputController = TextEditingController();
+  RecipeService recipeService = RecipeService();
+
+  final titleInputController = TextEditingController();
   final durationInputController = TextEditingController();
   final descriptionInputController = TextEditingController();
+  List<IngredientDetailDto> ingredients = [
+    IngredientDetailDto(null, "", 0, ""),
+  ];
 
-  RecipeService recipeService = RecipeService();
-  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    if (widget.recipe is RecipeDetailDto) {
+      titleInputController.text = widget.recipe!.title;
+      durationInputController.text = widget.recipe!.duration.toString();
+      descriptionInputController.text = widget.recipe!.description;
+      if (widget.recipe!.ingredients.isNotEmpty) {
+        ingredients = widget.recipe!.ingredients;
+      }
+    }
+  }
 
-  void addNewRecipe(BuildContext context) {
+  void duplicateIngredient() {
+    setState(() {
+      ingredients.add(IngredientDetailDto(null, "", 0, ""));
+    });
+  }
+
+  void updateIngredient(int index, IngredientDetailDto ingredient) {
+    setState(() {
+      ingredients[index] = ingredient;
+    });
+  }
+
+  void registerRecipe(BuildContext context) {
     var recipe = RecipeDetailDto(
-      null,
-      nameInputController.text,
+      widget.recipe?.idRecipe,
+      titleInputController.text,
       descriptionInputController.text,
       int.parse(durationInputController.text),
-      [],
+      ingredients,
     );
+    if (widget.recipe is RecipeDetailDto) {
+      updateRecipe(context, recipe);
+    } else {
+      addNewRecipe(context, recipe);
+    }
+  }
+
+  void updateRecipe(BuildContext context, RecipeDetailDto recipe) {
+    recipeService.updateRecipe(recipe);
+    widget.recipesCubit.updateExistingRecipe(recipe);
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  void addNewRecipe(BuildContext context, RecipeDetailDto recipe) {
     recipeService.createNewRecipe(recipe);
     widget.recipesCubit.addNewRecipe(recipe);
+    Navigator.pop(context);
   }
 
   @override
@@ -75,7 +119,7 @@ class _FormPageState extends State<FormPage> {
                 child: Column(
                   children: [
                     TextFormField(
-                      controller: nameInputController,
+                      controller: titleInputController,
                       decoration: const InputDecoration(
                         icon: Icon(
                           Icons.set_meal,
@@ -139,9 +183,32 @@ class _FormPageState extends State<FormPage> {
                     const SizedBox(
                       height: 10,
                     ),
+                    Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: SizedBox(
+                            height: 200,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: ingredients.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Row(children: [
+                                  IngredientForm(
+                                    ingredient: ingredients[index],
+                                    onUpdate: (IngredientDetailDto ingredient) {
+                                      updateIngredient(index, ingredient);
+                                    },
+                                  ),
+                                  const SizedBox(width: 20)
+                                ]);
+                              },
+                            ))),
+                    ElevatedButton(
+                      onPressed: duplicateIngredient,
+                      child: const Text('Add Ingredient'),
+                    ),
                     ElevatedButton(
                       onPressed: () {
-                        addNewRecipe(context);
+                        registerRecipe(context);
                       },
                       child: const Text('Submit'),
                     ),

@@ -1,5 +1,4 @@
-
-import 'package:recipes/data/database/database.dart';
+import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
 import 'cubit.state.dart';
 
@@ -10,5 +9,5 @@ class RecipesStateData {
     required this.recipes,
   });
 
-  final List<RecipeData> recipes;
+  final List<RecipeDetailDto> recipes;
 }

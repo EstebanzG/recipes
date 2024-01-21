@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
-import '../../data/database/database.dart';
+import '../cubit/recipes.cubit.dart';
 import 'meal_card.widget.dart';
 
 class OtherRecipes extends StatelessWidget {
-
-  final List<RecipeData> recipes;
+  final List<RecipeDetailDto> recipes;
 
   const OtherRecipes({
     super.key,
@@ -74,12 +75,15 @@ class OtherRecipes extends StatelessWidget {
           padding: const EdgeInsets.only(top: 20),
           child: Column(
             children: [
-              for (var recipe in recipes) Column (
-                children: [
-                  MealCard(recipe: recipe),
-                  const SizedBox(height: 20)
-                ],
-              )
+              for (var recipe in recipes)
+                Column(
+                  children: [
+                    MealCard(
+                        recipe: recipe,
+                        recipesCubit: BlocProvider.of<RecipesCubit>(context)),
+                    const SizedBox(height: 20)
+                  ],
+                )
             ],
           ),
         ),

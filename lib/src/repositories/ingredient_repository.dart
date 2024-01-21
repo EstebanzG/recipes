@@ -1,4 +1,6 @@
+import 'package:drift/drift.dart';
 import 'package:recipes/data/database/database.dart';
+import 'package:recipes/data/dto/ingredient_detail_dto.dart';
 import 'package:recipes/src/repositories/ingredient_repository_interface.dart';
 
 class IngredientRepository implements IIngredientRepository {
@@ -13,7 +15,7 @@ class IngredientRepository implements IIngredientRepository {
   }
 
   @override
-  Future<IngredientData?> getOne(int id) {
+  Future<List<IngredientData>>? getByRecipeId(int id) {
     throw UnimplementedError();
   }
 
@@ -23,7 +25,28 @@ class IngredientRepository implements IIngredientRepository {
   }
 
   @override
-  Future<void> update(IngredientData recipes) {
-    throw UnimplementedError();
+  Future<void> updates(
+      List<IngredientDetailDto> ingredients, int idRecipe) async {
+    for (var ingredient in ingredients) {
+
+      IngredientCompanion ingredientCompanion = IngredientCompanion.insert(
+          idRecipe: idRecipe,
+          name: ingredient.name,
+          quantity: ingredient.quantity,
+          unit: ingredient.unit);
+
+      if (ingredient.idIngredient != null) {
+        ingredientCompanion = IngredientCompanion.insert(
+            idIngredient: Value(ingredient.idIngredient ?? 0),
+            idRecipe: idRecipe,
+            name: ingredient.name,
+            quantity: ingredient.quantity,
+            unit: ingredient.unit);
+      }
+
+      await database.transaction(() async {
+        await database.into(database.ingredient).insert(ingredientCompanion, mode: InsertMode.insertOrReplace);
+      });
+    }
   }
 }

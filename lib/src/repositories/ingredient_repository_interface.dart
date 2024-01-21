@@ -1,9 +1,10 @@
 import '../../data/database/database.dart';
+import '../../data/dto/ingredient_detail_dto.dart';
 
 abstract class IIngredientRepository {
   Future<List<IngredientData>> getAll();
-  Future<IngredientData?> getOne(int id);
-  Future<void> insert(IngredientData book);
-  Future<void> update(IngredientData book);
+  Future<List<IngredientData>>? getByRecipeId(int id);
+  Future<void> insert(IngredientData ingredientData);
+  Future<void> updates(List<IngredientDetailDto> recipes, int idRecipe);
   Future<void> delete(int id);
 }

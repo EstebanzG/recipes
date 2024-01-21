@@ -1,13 +1,11 @@
-import 'package:drift/drift.dart';
 import 'package:recipes/data/database/database.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 import 'package:recipes/src/repositories/recipe_repository_interface.dart';
 
 class RecipeRepository implements IRecipeRepository {
-
   @override
-  Future<List<RecipeData>> getAll() {
-    return database.select(database.recipe).get();
+  Future<List<RecipeData>> getAll() async {
+    return await database.select(database.recipe).get();
   }
 
   @override
@@ -33,8 +31,12 @@ class RecipeRepository implements IRecipeRepository {
   }
 
   @override
-  Future<void> update(RecipeData recipes) {
-    throw UnimplementedError();
+  Future<void> update(RecipeDetailDto recipe) async {
+    database.update(database.recipe).replace(RecipeData(
+        idRecipe: recipe.idRecipe ?? 0,
+        title: recipe.title,
+        description: recipe.description,
+        duration: recipe.duration));
   }
 
   @override
@@ -46,17 +48,13 @@ class RecipeRepository implements IRecipeRepository {
               duration: recipe.duration,
             ));
 
-    var ingredientId = await database
-        .into(database.ingredient)
-        .insert(IngredientCompanion.insert(
-          name: 'carrot',
-        ));
-
-    await database
-        .into(database.recipeIngredient)
-        .insert(RecipeIngredientCompanion.insert(
-          idRecipe: Value(recipeId),
-          idIngredient: Value(ingredientId),
-        ));
+    for (var ingredient in recipe.ingredients) {
+      database.into(database.ingredient).insert(IngredientCompanion.insert(
+            idRecipe: recipeId,
+            name: ingredient.name,
+            quantity: ingredient.quantity,
+            unit: ingredient.unit,
+          ));
+    }
   }
 }

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:recipes/data/database/database.dart';
+import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
+import '../cubit/recipes.cubit.dart';
 import '../pages/detail.page.dart';
 
 class MealCard extends StatelessWidget {
-
-  final RecipeData recipe;
+  final RecipeDetailDto recipe;
+  final RecipesCubit recipesCubit;
 
   const MealCard({
     super.key,
     required this.recipe,
+    required this.recipesCubit,
   });
 
   @override
@@ -19,7 +21,11 @@ class MealCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DetailPage(recipe: recipe)),
+          MaterialPageRoute(
+              builder: (context) => DetailPage(
+                    recipe: recipe,
+                    recipesCubit: recipesCubit,
+                  )),
         );
       },
       child: Row(
@@ -28,19 +34,15 @@ class MealCard extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
                 color: Color.fromRGBO(217, 217, 217, 100),
-                borderRadius: BorderRadius.all(Radius.circular(30))
-            ),
+                borderRadius: BorderRadius.all(Radius.circular(30))),
             height: 150,
             width: 300,
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: Text(
-                  recipe.title
-              ),
+              child: Text(recipe.title),
             ),
           )
         ],
-
       ),
     );
   }
