@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
 import '../cubit/recipes.cubit.dart';
-import 'meal_card.widget.dart';
+import 'recipe_card.widget.dart';
 
 class OtherRecipes extends StatelessWidget {
   final List<RecipeDetailDto> recipes;
@@ -19,7 +19,9 @@ class OtherRecipes extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.only(top: 20, bottom: 10),
-          child: Column(
+          child: Flex(
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text.rich(
                 TextSpan(
@@ -55,36 +57,48 @@ class OtherRecipes extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(
+        SizedBox(
           width: 350,
           height: 50,
-          child: TextField(
-            decoration: InputDecoration(
+          child: TextFormField(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(50)),
               ),
+              filled: true,
+              fillColor: Colors.white,
               hintText: 'Tarte à la tomate',
+              labelText: 'Rechercher'
             ),
             cursorColor: Colors.black,
+            onChanged: (String value) {
+              BlocProvider.of<RecipesCubit>(context).getAllByName(value);
+            },
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: Column(
-            children: [
-              for (var recipe in recipes)
-                Column(
-                  children: [
-                    MealCard(
-                        recipe: recipe,
-                        recipesCubit: BlocProvider.of<RecipesCubit>(context)),
-                    const SizedBox(height: 20)
-                  ],
-                )
-            ],
+          padding: const EdgeInsets.all(20),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+            ),
+            itemCount: recipes.length,
+            itemBuilder: (context, index) {
+              return SizedBox(
+                height: 200,
+                child: RecipeCard(
+                  recipe: recipes[index],
+                  recipesCubit: BlocProvider.of<RecipesCubit>(context),
+                ),
+              ) ;
+            },
           ),
         ),
       ],

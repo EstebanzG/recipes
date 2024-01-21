@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipes/data/dto/recipe_detail_dto.dart';
 import 'package:recipes/ui/cubit/cubit.state.dart';
 
 import '../cubit/recipes.cubit.dart';
@@ -9,7 +10,6 @@ import '../widget/header.widget.dart';
 import '../widget/others_recipes.widget.dart';
 
 class HomePage extends StatefulWidget {
-
   const HomePage({
     super.key,
   });
@@ -19,7 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     BlocProvider.of<RecipesCubit>(context).getAll();
@@ -28,28 +27,32 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipesCubit, RecipesState>(
-        builder: (context, state) {
-          if (state is SuccessState<RecipesStateData>) {
-            return Scaffold(
-              body: SafeArea(
-                bottom: false,
-                child: SingleChildScrollView(
-                  child: Column(children: [
-                    const Header(),
-                    FavoriteRecipes(recipes: state.data.recipes),
-                    OtherRecipes(recipes: state.data.recipes)
-                  ]),
-                ),
-              ),
-            );
-          } else {
-            return const Scaffold(
-              body: Center(
-                child: Text('Error occurred!'),
-              ),
-            );
-          }
-        });
+    return BlocBuilder<RecipesCubit, RecipesState>(builder: (context, state) {
+      if (state is FailureState<RecipesStateData>) {
+        return const Scaffold(
+          body: Center(
+            child: Text('Error occurred!'),
+          ),
+        );
+      }
+
+      List<RecipeDetailDto> recipes = [];
+      if (state is SuccessState<RecipesStateData>) {
+        recipes = state.data.recipes;
+      }
+
+      return Scaffold(
+        body: SafeArea(
+          bottom: false,
+          child: SingleChildScrollView(
+            child: Column(children: [
+              const Header(),
+              FavoriteRecipes(recipes: recipes),
+              OtherRecipes(recipes: recipes)
+            ]),
+          ),
+        ),
+      );
+    });
   }
 }

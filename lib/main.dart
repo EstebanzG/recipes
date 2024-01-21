@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Roboto',
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.grey,
+          seedColor: Colors.white,
         ),
         dialogBackgroundColor: Colors.white,
         useMaterial3: true,
@@ -31,14 +31,6 @@ class MyApp extends StatelessWidget {
           ],
           child: BlocBuilder<RecipesCubit, RecipesState>(
               builder: (BuildContext context, RecipesState state) {
-            if (state is FailureState) {
-              return const Scaffold(
-                body: Center(
-                  child: Text('Une erreur est survenue !'),
-                ),
-              );
-            }
-
             return const HomePage();
           })));
 }

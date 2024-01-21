@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
 import '../cubit/recipes.cubit.dart';
-import 'meal_card.widget.dart';
+import 'recipe_card.widget.dart';
 
 class FavoriteRecipes extends StatelessWidget {
   final List<RecipeDetailDto> recipes;
@@ -50,7 +50,7 @@ class FavoriteRecipes extends StatelessWidget {
         ),
       ),
       Padding(
-          padding: const EdgeInsets.only(left: 20),
+          padding: const EdgeInsets.only(left: 20, top: 10),
           child: SizedBox(
               height: 200,
               child: ListView.builder(
@@ -58,10 +58,10 @@ class FavoriteRecipes extends StatelessWidget {
                 itemCount: recipes.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Row(children: [
-                    MealCard(
+                    RecipeCard(
                         recipe: recipes[index],
                         recipesCubit: BlocProvider.of<RecipesCubit>(context)),
-                    const SizedBox(width: 20)
+                    const SizedBox(width: 40)
                   ]);
                 },
               )))

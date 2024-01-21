@@ -26,6 +26,21 @@ class RecipesCubit extends Cubit<RecipesState> {
     }
   }
 
+  void getAllByName(String name) async {
+    try {
+      emit(const LoadingState<RecipesStateData>());
+      List<RecipeData> recipes = await recipeService.getAllRecipes();
+      final List<IngredientData> ingredients =
+      await ingredientService.getAllIngredients();
+
+      recipes = recipes.where((recipe) => recipe.title.contains(name)).toList();
+
+      setState(createRecipesDto(recipes, ingredients));
+    } on Exception catch (exception) {
+      emit(FailureState<RecipesStateData>(message: exception.toString()));
+    }
+  }
+
   void addNewRecipe(RecipeDetailDto recipe) {
     if (state is! SuccessState) return;
     final SuccessState<RecipesStateData> recipesState =
