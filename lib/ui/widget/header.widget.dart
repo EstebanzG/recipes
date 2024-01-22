@@ -29,7 +29,7 @@ class Header extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: 'Simon',
+              text: 'Chef',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 24,

@@ -23,6 +23,15 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'Title', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _favoriteMeta =
+      const VerificationMeta('favorite');
+  @override
+  late final GeneratedColumn<bool> favorite = GeneratedColumn<bool>(
+      'Favorite', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("Favorite" IN (0, 1))'));
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -37,7 +46,7 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
       type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [idRecipe, title, description, duration];
+      [idRecipe, title, favorite, description, duration];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -57,6 +66,12 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
           _titleMeta, title.isAcceptableOrUnknown(data['Title']!, _titleMeta));
     } else if (isInserting) {
       context.missing(_titleMeta);
+    }
+    if (data.containsKey('Favorite')) {
+      context.handle(_favoriteMeta,
+          favorite.isAcceptableOrUnknown(data['Favorite']!, _favoriteMeta));
+    } else if (isInserting) {
+      context.missing(_favoriteMeta);
     }
     if (data.containsKey('Description')) {
       context.handle(
@@ -85,6 +100,8 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
           .read(DriftSqlType.int, data['${effectivePrefix}id_recipe'])!,
       title: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}Title'])!,
+      favorite: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}Favorite'])!,
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}Description'])!,
       duration: attachedDatabase.typeMapping
@@ -101,11 +118,13 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
 class RecipeData extends DataClass implements Insertable<RecipeData> {
   final int idRecipe;
   final String title;
+  final bool favorite;
   final String description;
   final int duration;
   const RecipeData(
       {required this.idRecipe,
       required this.title,
+      required this.favorite,
       required this.description,
       required this.duration});
   @override
@@ -113,6 +132,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
     final map = <String, Expression>{};
     map['id_recipe'] = Variable<int>(idRecipe);
     map['Title'] = Variable<String>(title);
+    map['Favorite'] = Variable<bool>(favorite);
     map['Description'] = Variable<String>(description);
     map['Duration'] = Variable<int>(duration);
     return map;
@@ -122,6 +142,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
     return RecipeCompanion(
       idRecipe: Value(idRecipe),
       title: Value(title),
+      favorite: Value(favorite),
       description: Value(description),
       duration: Value(duration),
     );
@@ -133,6 +154,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
     return RecipeData(
       idRecipe: serializer.fromJson<int>(json['idRecipe']),
       title: serializer.fromJson<String>(json['title']),
+      favorite: serializer.fromJson<bool>(json['favorite']),
       description: serializer.fromJson<String>(json['description']),
       duration: serializer.fromJson<int>(json['duration']),
     );
@@ -143,16 +165,22 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
     return <String, dynamic>{
       'idRecipe': serializer.toJson<int>(idRecipe),
       'title': serializer.toJson<String>(title),
+      'favorite': serializer.toJson<bool>(favorite),
       'description': serializer.toJson<String>(description),
       'duration': serializer.toJson<int>(duration),
     };
   }
 
   RecipeData copyWith(
-          {int? idRecipe, String? title, String? description, int? duration}) =>
+          {int? idRecipe,
+          String? title,
+          bool? favorite,
+          String? description,
+          int? duration}) =>
       RecipeData(
         idRecipe: idRecipe ?? this.idRecipe,
         title: title ?? this.title,
+        favorite: favorite ?? this.favorite,
         description: description ?? this.description,
         duration: duration ?? this.duration,
       );
@@ -161,6 +189,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
     return (StringBuffer('RecipeData(')
           ..write('idRecipe: $idRecipe, ')
           ..write('title: $title, ')
+          ..write('favorite: $favorite, ')
           ..write('description: $description, ')
           ..write('duration: $duration')
           ..write(')'))
@@ -168,13 +197,15 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
   }
 
   @override
-  int get hashCode => Object.hash(idRecipe, title, description, duration);
+  int get hashCode =>
+      Object.hash(idRecipe, title, favorite, description, duration);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RecipeData &&
           other.idRecipe == this.idRecipe &&
           other.title == this.title &&
+          other.favorite == this.favorite &&
           other.description == this.description &&
           other.duration == this.duration);
 }
@@ -182,31 +213,37 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
 class RecipeCompanion extends UpdateCompanion<RecipeData> {
   final Value<int> idRecipe;
   final Value<String> title;
+  final Value<bool> favorite;
   final Value<String> description;
   final Value<int> duration;
   const RecipeCompanion({
     this.idRecipe = const Value.absent(),
     this.title = const Value.absent(),
+    this.favorite = const Value.absent(),
     this.description = const Value.absent(),
     this.duration = const Value.absent(),
   });
   RecipeCompanion.insert({
     this.idRecipe = const Value.absent(),
     required String title,
+    required bool favorite,
     required String description,
     required int duration,
   })  : title = Value(title),
+        favorite = Value(favorite),
         description = Value(description),
         duration = Value(duration);
   static Insertable<RecipeData> custom({
     Expression<int>? idRecipe,
     Expression<String>? title,
+    Expression<bool>? favorite,
     Expression<String>? description,
     Expression<int>? duration,
   }) {
     return RawValuesInsertable({
       if (idRecipe != null) 'id_recipe': idRecipe,
       if (title != null) 'Title': title,
+      if (favorite != null) 'Favorite': favorite,
       if (description != null) 'Description': description,
       if (duration != null) 'Duration': duration,
     });
@@ -215,11 +252,13 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
   RecipeCompanion copyWith(
       {Value<int>? idRecipe,
       Value<String>? title,
+      Value<bool>? favorite,
       Value<String>? description,
       Value<int>? duration}) {
     return RecipeCompanion(
       idRecipe: idRecipe ?? this.idRecipe,
       title: title ?? this.title,
+      favorite: favorite ?? this.favorite,
       description: description ?? this.description,
       duration: duration ?? this.duration,
     );
@@ -233,6 +272,9 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
     }
     if (title.present) {
       map['Title'] = Variable<String>(title.value);
+    }
+    if (favorite.present) {
+      map['Favorite'] = Variable<bool>(favorite.value);
     }
     if (description.present) {
       map['Description'] = Variable<String>(description.value);
@@ -248,6 +290,7 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
     return (StringBuffer('RecipeCompanion(')
           ..write('idRecipe: $idRecipe, ')
           ..write('title: $title, ')
+          ..write('favorite: $favorite, ')
           ..write('description: $description, ')
           ..write('duration: $duration')
           ..write(')'))

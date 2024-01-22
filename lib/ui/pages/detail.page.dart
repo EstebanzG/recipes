@@ -68,7 +68,7 @@ class DetailPage extends StatelessWidget {
                 ),
               ],
             ),
-            DetailInformation(recipe: recipe)
+            DetailInformation(recipe: recipe, recipesCubit: recipesCubit)
           ]),
         ),
       ),

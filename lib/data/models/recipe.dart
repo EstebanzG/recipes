@@ -5,6 +5,8 @@ class Recipe extends Table {
 
   TextColumn get title => text().named('Title')();
 
+  BoolColumn get favorite => boolean().named('Favorite')();
+
   TextColumn get description => text().named('Description')();
 
   IntColumn get duration => integer().named('Duration')();

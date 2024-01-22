@@ -1,14 +1,41 @@
 import 'package:flutter/material.dart';
 
 import '../../data/dto/recipe_detail_dto.dart';
+import '../../src/services/recipe_service.dart';
+import '../cubit/recipes.cubit.dart';
 
-class DetailInformation extends StatelessWidget {
+class DetailInformation extends StatefulWidget {
   final RecipeDetailDto recipe;
+  final RecipesCubit recipesCubit;
 
   const DetailInformation({
     super.key,
     required this.recipe,
+    required this.recipesCubit,
   });
+
+  @override
+  State<DetailInformation> createState() => _DetailInformationState();
+}
+
+class _DetailInformationState extends State<DetailInformation> {
+  final RecipeService recipeService = RecipeService();
+  IconData favoriteIcon = Icons.favorite_border;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.recipe.favorite ? Icons.favorite : Icons.favorite_border;
+  }
+
+  void manageFavorite() {
+    widget.recipe.favorite = !widget.recipe.favorite;
+    setState(() {
+      favoriteIcon = widget.recipe.favorite ? Icons.favorite : Icons.favorite_border;
+    });
+    widget.recipesCubit.updateExistingRecipe(widget.recipe);
+    recipeService.updateRecipe(widget.recipe);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +48,7 @@ class DetailInformation extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                recipe.title,
+                widget.recipe.title,
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 24,
@@ -37,25 +64,6 @@ class DetailInformation extends StatelessWidget {
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Flex(
-                direction: Axis.vertical,
-                children: [
-                  Icon(
-                    Icons.favorite_border,
-                    color: Colors.black,
-                    size: 35.0,
-                    semanticLabel: 'add to favorite',
-                  ),
-                  Text(
-                    'Add to favorite',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
               Flex(
                 direction: Axis.vertical,
                 children: [
@@ -66,8 +74,51 @@ class DetailInformation extends StatelessWidget {
                     semanticLabel: 'duration',
                   ),
                   Text(
-                    '${recipe.duration} minutes',
+                    '${widget.recipe.duration} minutes',
                     style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              Flex(
+                direction: Axis.vertical,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      manageFavorite();
+                    },
+                    icon: Icon(
+                      favoriteIcon,
+                      color: Colors.black,
+                      size: 35.0,
+                      semanticLabel: 'add to favorite',
+                    ),
+                  ),
+                  const Text(
+                    'Add to favorite',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              const Flex(
+                direction: Axis.vertical,
+                children: [
+                  Icon(
+                    Icons.share,
+                    color: Colors.black,
+                    size: 35.0,
+                    semanticLabel: 'share',
+                  ),
+                  Text(
+                    'Partager',
+                    style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
                       fontWeight: FontWeight.w400,
@@ -82,7 +133,7 @@ class DetailInformation extends StatelessWidget {
           ),
           Column(
             children: [
-              for (var ingredient in recipe.ingredients)
+              for (var ingredient in widget.recipe.ingredients)
                 Row(
                   children: [
                     Text(
@@ -99,7 +150,7 @@ class DetailInformation extends StatelessWidget {
             height: 10,
           ),
           Text(
-            recipe.description,
+            widget.recipe.description,
             textAlign: TextAlign.justify,
             style: const TextStyle(
               color: Colors.black,

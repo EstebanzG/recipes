@@ -24,9 +24,9 @@ class FormPage extends StatefulWidget {
 class _FormPageState extends State<FormPage> {
   RecipeService recipeService = RecipeService();
 
-  final titleInputController = TextEditingController();
-  final durationInputController = TextEditingController();
-  final descriptionInputController = TextEditingController();
+  final TextEditingController titleInputController = TextEditingController();
+  final TextEditingController durationInputController = TextEditingController();
+  final TextEditingController descriptionInputController = TextEditingController();
   List<IngredientDetailDto> ingredients = [
     IngredientDetailDto(null, "", 0, ""),
   ];
@@ -59,6 +59,7 @@ class _FormPageState extends State<FormPage> {
   void registerRecipe(BuildContext context) {
     var recipe = RecipeDetailDto(
       widget.recipe?.idRecipe,
+      false,
       titleInputController.text,
       descriptionInputController.text,
       int.parse(durationInputController.text),

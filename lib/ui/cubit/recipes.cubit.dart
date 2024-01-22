@@ -17,25 +17,7 @@ class RecipesCubit extends Cubit<RecipesState> {
     try {
       emit(const LoadingState<RecipesStateData>());
       final List<RecipeData> recipes = await recipeService.getAllRecipes();
-      final List<IngredientData> ingredients =
-          await ingredientService.getAllIngredients();
-
-      setState(createRecipesDto(recipes, ingredients));
-    } on Exception catch (exception) {
-      emit(FailureState<RecipesStateData>(message: exception.toString()));
-    }
-  }
-
-  void getAllByName(String name) async { //todo modifier et passer par un where
-    try {
-      emit(const LoadingState<RecipesStateData>());
-      List<RecipeData> recipes = await recipeService.getAllRecipes();
-      final List<IngredientData> ingredients =
-      await ingredientService.getAllIngredients();
-
-      recipes = recipes.where((recipe) => recipe.title.toLowerCase().contains(name.toLowerCase())).toList();
-
-      setState(createRecipesDto(recipes, ingredients));
+      setState(await createRecipesDto(recipes));
     } on Exception catch (exception) {
       emit(FailureState<RecipesStateData>(message: exception.toString()));
     }
@@ -60,13 +42,12 @@ class RecipesCubit extends Cubit<RecipesState> {
     setState(List<RecipeDetailDto>.from(recipes)..add(recipe));
   }
 
-  List<RecipeDetailDto> createRecipesDto(
-      List<RecipeData> recipes, List<IngredientData> ingredients) {
+  Future<List<RecipeDetailDto>> createRecipesDto(
+      List<RecipeData> recipes) async {
     List<RecipeDetailDto> recipesDto = [];
     for (var recipe in recipes) {
-      var recipeIngredients = ingredients
-          .where((ingredient) => ingredient.idRecipe == recipe.idRecipe)
-          .toList();
+      List<IngredientData> recipeIngredients =
+          await ingredientService.getIngredientsByRecipeId(recipe.idRecipe);
 
       recipesDto.add(
           recipeService.createRecipeDtoFromData(recipe, recipeIngredients));

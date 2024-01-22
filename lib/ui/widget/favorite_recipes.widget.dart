@@ -2,16 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
+import '../../src/services/recipe_service.dart';
 import '../cubit/recipes.cubit.dart';
 import 'recipe_card.widget.dart';
 
-class FavoriteRecipes extends StatelessWidget {
+class FavoriteRecipes extends StatefulWidget {
   final List<RecipeDetailDto> recipes;
 
   const FavoriteRecipes({
     super.key,
     required this.recipes,
   });
+
+  @override
+  State<FavoriteRecipes> createState() => _FavoriteRecipesState();
+}
+
+class _FavoriteRecipesState extends State<FavoriteRecipes> {
+  final RecipeService recipeService = RecipeService();
+  late List<RecipeDetailDto> favoriteRecipes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +70,11 @@ class FavoriteRecipes extends StatelessWidget {
               height: 200,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: recipes.length,
+                itemCount: favoriteRecipes.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Row(children: [
                     RecipeCard(
-                        recipe: recipes[index],
+                        recipe: favoriteRecipes[index],
                         recipesCubit: BlocProvider.of<RecipesCubit>(context)),
                     const SizedBox(width: 40)
                   ]);

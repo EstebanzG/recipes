@@ -1,17 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
+import 'package:recipes/src/services/recipe_service.dart';
 
 import '../cubit/recipes.cubit.dart';
 import 'recipe_card.widget.dart';
 
-class OtherRecipes extends StatelessWidget {
+class OtherRecipes extends StatefulWidget {
   final List<RecipeDetailDto> recipes;
 
   const OtherRecipes({
     super.key,
     required this.recipes,
   });
+
+  @override
+  State<OtherRecipes> createState() => _OtherRecipesState();
+}
+
+class _OtherRecipesState extends State<OtherRecipes> {
+  final TextEditingController searchBarController = TextEditingController();
+  final RecipeService recipeService = RecipeService();
+  late List<RecipeDetailDto> filteredRecipes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredRecipes = widget.recipes;
+  }
+
+  @override
+  void didUpdateWidget(covariant OtherRecipes oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.recipes != oldWidget.recipes) {
+      reloadFilteredRecipes(searchBarController.text);
+    }
+  }
+
+  void reloadFilteredRecipes(String name) {
+    setState(() {
+      filteredRecipes = recipeService.getAllRecipesByName(widget.recipes, name);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,21 +91,21 @@ class OtherRecipes extends StatelessWidget {
           width: 350,
           height: 50,
           child: TextFormField(
+            controller: searchBarController,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(50)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(50)),
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              hintText: 'Tarte à la tomate',
-              labelText: 'Rechercher'
-            ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Tarte à la tomate',
+                labelText: 'Rechercher'),
             cursorColor: Colors.black,
-            onChanged: (String value) {
-              BlocProvider.of<RecipesCubit>(context).getAllByName(value);
+            onChanged: (String searchValue) {
+              reloadFilteredRecipes(searchValue);
             },
           ),
         ),
@@ -89,15 +119,14 @@ class OtherRecipes extends StatelessWidget {
               crossAxisSpacing: 20,
               mainAxisSpacing: 20,
             ),
-            itemCount: recipes.length,
+            itemCount: filteredRecipes.length,
             itemBuilder: (context, index) {
               return SizedBox(
-                height: 200,
                 child: RecipeCard(
-                  recipe: recipes[index],
+                  recipe: filteredRecipes[index],
                   recipesCubit: BlocProvider.of<RecipesCubit>(context),
                 ),
-              ) ;
+              );
             },
           ),
         ),

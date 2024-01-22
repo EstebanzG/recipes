@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:recipes/data/database/database.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 import 'package:recipes/src/repositories/recipe_repository_interface.dart';
@@ -6,6 +7,12 @@ class RecipeRepository implements IRecipeRepository {
   @override
   Future<List<RecipeData>> getAll() async {
     return await database.select(database.recipe).get();
+  }
+
+  Future<List<RecipeData>> getAllRecipeByName(String name) async {
+    return await (database.recipe.select()
+      ..where((recipe) => recipe.title.contains(name)))
+        .get();
   }
 
   @override
@@ -23,6 +30,7 @@ class RecipeRepository implements IRecipeRepository {
     var recipeId =
         await database.into(database.recipe).insert(RecipeCompanion.insert(
               title: recipe.title,
+              favorite: recipe.favorite,
               description: recipe.description,
               duration: recipe.duration,
             ));
@@ -34,6 +42,7 @@ class RecipeRepository implements IRecipeRepository {
   Future<void> update(RecipeDetailDto recipe) async {
     database.update(database.recipe).replace(RecipeData(
         idRecipe: recipe.idRecipe ?? 0,
+        favorite: recipe.favorite,
         title: recipe.title,
         description: recipe.description,
         duration: recipe.duration));
@@ -44,6 +53,7 @@ class RecipeRepository implements IRecipeRepository {
     var recipeId =
         await database.into(database.recipe).insert(RecipeCompanion.insert(
               title: recipe.title,
+              favorite: recipe.favorite,
               description: recipe.description,
               duration: recipe.duration,
             ));

@@ -13,6 +13,10 @@ class RecipeService {
     return await recipeRepository.getAll();
   }
 
+  List<RecipeDetailDto> getAllRecipesByName(List<RecipeDetailDto> recipes, String name) {
+    return recipes.where((recipe) => recipe.title.toLowerCase().contains(name.toLowerCase())).toList();
+  }
+
   void createNewRecipe(RecipeDetailDto recipeDto) {
     recipeRepository.insertRecipeWithIngredients(recipeDto);
   }
@@ -27,6 +31,7 @@ class RecipeService {
       RecipeData recipe, List<IngredientData> ingredients) {
     return RecipeDetailDto(
         recipe.idRecipe,
+        recipe.favorite,
         recipe.title,
         recipe.description,
         recipe.duration,
@@ -34,5 +39,9 @@ class RecipeService {
             .map((ingredient) => IngredientDetailDto(ingredient.idIngredient,
                 ingredient.name, ingredient.quantity, ingredient.unit))
             .toList());
+  }
+
+  List<RecipeDetailDto> getFavoriteRecipes(List<RecipeDetailDto> recipes) {
+    return recipes.where((recipe) => recipe.favorite == true).toList();
   }
 }
