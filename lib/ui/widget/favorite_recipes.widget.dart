@@ -25,7 +25,18 @@ class _FavoriteRecipesState extends State<FavoriteRecipes> {
   @override
   void initState() {
     super.initState();
-    favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
+    setState(() {
+      favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant FavoriteRecipes oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.recipes != oldWidget.recipes) {
+      setState(() {
+        favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
+      });    }
   }
 
   @override

@@ -57,7 +57,7 @@ class RecipeRepository implements IRecipeRepository {
               description: recipe.description,
               duration: recipe.duration,
             ));
-
+//todo change repository
     for (var ingredient in recipe.ingredients) {
       database.into(database.ingredient).insert(IngredientCompanion.insert(
             idRecipe: recipeId,

@@ -25,7 +25,9 @@ class _DetailInformationState extends State<DetailInformation> {
   @override
   void initState() {
     super.initState();
-    widget.recipe.favorite ? Icons.favorite : Icons.favorite_border;
+    setState(() {
+      favoriteIcon = widget.recipe.favorite ? Icons.favorite : Icons.favorite_border;
+    });
   }
 
   void manageFavorite() {
