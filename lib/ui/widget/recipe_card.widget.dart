@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
+import '../../src/services/recipe_service.dart';
 import '../cubit/recipes.cubit.dart';
 import '../pages/detail.page.dart';
 
 class RecipeCard extends StatelessWidget {
+  final RecipeService recipeService = RecipeService();
   final RecipeDetailDto recipe;
   final RecipesCubit recipesCubit;
 
-  const RecipeCard({
+  RecipeCard({
     super.key,
     required this.recipe,
     required this.recipesCubit,
   });
+
+  void deleteRecipe() {
+    recipeService.deleteRecipe(recipe);
+    recipesCubit.deleteRecipe(recipe);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +65,7 @@ class RecipeCard extends StatelessWidget {
                         children: [
                           IconButton(
                               onPressed: () {
-                                //todo
+                                deleteRecipe();
                               },
                               icon: const Icon(
                                 Icons.delete_forever_outlined,

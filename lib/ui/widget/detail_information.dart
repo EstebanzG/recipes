@@ -20,20 +20,21 @@ class DetailInformation extends StatefulWidget {
 
 class _DetailInformationState extends State<DetailInformation> {
   final RecipeService recipeService = RecipeService();
+  late bool isFavorite = false;
   IconData favoriteIcon = Icons.favorite_border;
 
   @override
   void initState() {
     super.initState();
     setState(() {
-      favoriteIcon = widget.recipe.favorite ? Icons.favorite : Icons.favorite_border;
+      isFavorite = widget.recipe.favorite;
     });
   }
 
   void manageFavorite() {
     widget.recipe.favorite = !widget.recipe.favorite;
     setState(() {
-      favoriteIcon = widget.recipe.favorite ? Icons.favorite : Icons.favorite_border;
+      isFavorite = widget.recipe.favorite;
     });
     widget.recipesCubit.updateExistingRecipe(widget.recipe);
     recipeService.updateRecipe(widget.recipe);
@@ -93,15 +94,15 @@ class _DetailInformationState extends State<DetailInformation> {
                       manageFavorite();
                     },
                     icon: Icon(
-                      favoriteIcon,
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
                       color: Colors.black,
                       size: 35.0,
                       semanticLabel: 'add to favorite',
                     ),
                   ),
-                  const Text(
-                    'Add to favorite',
-                    style: TextStyle(
+                  Text(
+                    isFavorite ? 'Supprimer des favoris' : 'Ajouter aux favoris',
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 15,
                       fontWeight: FontWeight.w400,

@@ -32,44 +32,40 @@ class _IngredientFormState extends State<IngredientForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 180,
-      height: 200,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: nameInputController,
-            onChanged: (_) => _updateIngredient(),
-            decoration: const InputDecoration(
-              hintText: 'Ingredient',
-              labelText: 'Ingredient',
-            ),
+    return Row(
+      children: [
+        TextFormField(
+          controller: nameInputController,
+          onChanged: (_) => _updateIngredient(),
+          decoration: const InputDecoration(
+            hintText: 'Ingredient',
+            labelText: 'Ingredient',
           ),
-          const SizedBox(width: 10),
-          TextFormField(
-            controller: quantityInputController,
-            onChanged: (_) => _updateIngredient(),
-            decoration: const InputDecoration(
-              hintText: 'Quantity',
-              labelText: 'Quantity',
-            ),
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
+        ),
+        const SizedBox(width: 10),
+        TextFormField(
+          controller: quantityInputController,
+          onChanged: (_) => _updateIngredient(),
+          decoration: const InputDecoration(
+            hintText: 'Quantity',
+            labelText: 'Quantity',
           ),
-          const SizedBox(width: 10),
-          DropdownMenu(
-            controller: unitInputController,
-            initialSelection: IngredientDetailDto.UNITS.first,
-            onSelected: (_) => _updateIngredient(),
-            dropdownMenuEntries: IngredientDetailDto.UNITS
-                .map<DropdownMenuEntry<String>>((String value) {
-              return DropdownMenuEntry<String>(value: value, label: value);
-            }).toList(),
-          ),
-        ],
-      ),
+          keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ],
+        ),
+        const SizedBox(width: 10),
+        DropdownMenu(
+          controller: unitInputController,
+          initialSelection: IngredientDetailDto.UNITS.first,
+          onSelected: (_) => _updateIngredient(),
+          dropdownMenuEntries: IngredientDetailDto.UNITS
+              .map<DropdownMenuEntry<String>>((String value) {
+            return DropdownMenuEntry<String>(value: value, label: value);
+          }).toList(),
+        ),
+      ],
     );
   }
 

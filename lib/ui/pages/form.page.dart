@@ -189,7 +189,7 @@ class _FormPageState extends State<FormPage> {
                         child: SizedBox(
                             height: 200,
                             child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
+                              scrollDirection: Axis.vertical,
                               itemCount: ingredients.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Row(children: [

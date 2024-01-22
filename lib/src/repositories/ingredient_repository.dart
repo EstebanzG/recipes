@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:recipes/data/database/database.dart';
 import 'package:recipes/data/dto/ingredient_detail_dto.dart';
+import 'package:recipes/data/dto/recipe_detail_dto.dart';
 import 'package:recipes/src/repositories/ingredient_repository_interface.dart';
 
 class IngredientRepository implements IIngredientRepository {
@@ -10,8 +11,9 @@ class IngredientRepository implements IIngredientRepository {
   }
 
   @override
-  Future<void> delete(int id) {
-    throw UnimplementedError();
+  Future<void> deleteAllIngredientFromRecipe(RecipeDetailDto recipeDetailDto) async {
+    database.ingredient.delete().where((ingredient) =>
+        ingredient.idRecipe.equals(recipeDetailDto.idRecipe ?? 0));
   }
 
   @override

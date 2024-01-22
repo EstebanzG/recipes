@@ -42,6 +42,16 @@ class RecipesCubit extends Cubit<RecipesState> {
     setState(List<RecipeDetailDto>.from(recipes)..add(recipe));
   }
 
+  void deleteRecipe(RecipeDetailDto recipe) {
+    if (state is! SuccessState) return;
+    final SuccessState<RecipesStateData> recipesState =
+    state as SuccessState<RecipesStateData>;
+    List<RecipeDetailDto> recipes = recipesState.data.recipes;
+    recipes.removeWhere((element) => element.idRecipe == recipe.idRecipe);
+
+    setState(List<RecipeDetailDto>.from(recipes));
+  }
+
   Future<List<RecipeDetailDto>> createRecipesDto(
       List<RecipeData> recipes) async {
     List<RecipeDetailDto> recipesDto = [];

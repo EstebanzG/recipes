@@ -27,6 +27,11 @@ class RecipeService {
         recipeDto.ingredients, recipeDto.idRecipe ?? 0);
   }
 
+  void deleteRecipe(RecipeDetailDto recipeDto) {
+    ingredientRepository.deleteAllIngredientFromRecipe(recipeDto);
+    recipeRepository.delete(recipeDto);
+  }
+
   RecipeDetailDto createRecipeDtoFromData(
       RecipeData recipe, List<IngredientData> ingredients) {
     return RecipeDetailDto(

@@ -10,14 +10,14 @@ class RecipeRepository implements IRecipeRepository {
   }
 
   Future<List<RecipeData>> getAllRecipeByName(String name) async {
-    return await (database.recipe.select()
-      ..where((recipe) => recipe.title.contains(name)))
-        .get();
+    return await (database.recipe.select()..where((recipe) => recipe.title.contains(name))).get();
   }
 
   @override
-  Future<void> delete(int id) {
-    throw UnimplementedError();
+  Future<bool> delete(RecipeDetailDto recipeDto) async {
+    return database.recipe.deleteOne(RecipeCompanion(
+      idRecipe: Value(recipeDto.idRecipe ?? 0),
+    ));
   }
 
   @override

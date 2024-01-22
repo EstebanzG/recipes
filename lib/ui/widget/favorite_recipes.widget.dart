@@ -36,14 +36,16 @@ class _FavoriteRecipesState extends State<FavoriteRecipes> {
     if (widget.recipes != oldWidget.recipes) {
       setState(() {
         favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
-      });    }
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       const Center(
-        child: Text.rich(
+        child:
+        Text.rich(
           TextSpan(
             children: [
               TextSpan(
@@ -75,6 +77,9 @@ class _FavoriteRecipesState extends State<FavoriteRecipes> {
           ),
         ),
       ),
+      favoriteRecipes.isEmpty ?
+      const Text("Vous n'avez aucune recette favorite 😞")
+          :
       Padding(
           padding: const EdgeInsets.only(left: 20, top: 10),
           child: SizedBox(

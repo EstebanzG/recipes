@@ -6,6 +6,6 @@ abstract class IRecipeRepository {
   Future<RecipeData?> getOne(int id);
   Future<void> insert(RecipeData recipeData);
   Future<void> update(RecipeDetailDto recipe);
-  Future<void> delete(int id);
+  Future<void> delete(RecipeDetailDto recipe);
   Future<void> insertRecipeWithIngredients(RecipeDetailDto recipe);
 }
