@@ -4,12 +4,14 @@ import 'package:recipes/data/dto/ingredient_detail_dto.dart';
 
 class IngredientForm extends StatefulWidget {
   final IngredientDetailDto ingredient;
-  final ValueChanged<IngredientDetailDto> onUpdate;
+  final Function(IngredientDetailDto) onUpdate;
+  final Function(IngredientDetailDto) onIngredientDelete;
 
   const IngredientForm({
     Key? key,
     required this.ingredient,
     required this.onUpdate,
+    required this.onIngredientDelete,
   }) : super(key: key);
 
   @override
@@ -29,6 +31,22 @@ class _IngredientFormState extends State<IngredientForm> {
     unitController.text = widget.ingredient.unit;
   }
 
+  void _deleteIngredient(IngredientDetailDto ingredientDetailDto) {
+    widget.onIngredientDelete(ingredientDetailDto);
+  }
+
+
+  void _updateIngredient() {
+    widget.onUpdate(
+      IngredientDetailDto(
+        widget.ingredient.idIngredient,
+        nameController.text,
+        int.tryParse(quantityController.text) ?? 0,
+        unitController.text,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Flex(
@@ -46,44 +64,48 @@ class _IngredientFormState extends State<IngredientForm> {
             ),
           ),
         ),
-        SizedBox(
-          width:
-              MediaQuery.of(context).size.width / 4, // Adjust width as needed
-          child: TextFormField(
-            controller: quantityController,
-            onChanged: (_) => _updateIngredient(),
-            decoration: const InputDecoration(
-              hintText: 'Quantity',
-              labelText: 'Quantity',
-            ),
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
+        Flex(
+            direction: Axis.vertical,
+            children: [
+              SizedBox(
+                width:
+                MediaQuery.of(context).size.width / 3, // Adjust width as needed
+                child: TextFormField(
+                  controller: quantityController,
+                  onChanged: (_) => _updateIngredient(),
+                  decoration: const InputDecoration(
+                    hintText: 'Quantity',
+                    labelText: 'Quantity',
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+              ),
+              DropdownMenu(
+                width: MediaQuery.of(context).size.width / 3,
+                controller: unitController,
+                initialSelection: IngredientDetailDto.UNITS.first,
+                onSelected: (_) => _updateIngredient(),
+                dropdownMenuEntries: IngredientDetailDto.UNITS
+                    .map<DropdownMenuEntry<String>>((String value) {
+                  return DropdownMenuEntry<String>(value: value, label: value);
+                }).toList(),
+              ),
+
             ],
-          ),
         ),
-        DropdownMenu(
-          width: MediaQuery.of(context).size.width / 4,
-          controller: unitController,
-          initialSelection: IngredientDetailDto.UNITS.first,
-          onSelected: (_) => _updateIngredient(),
-          dropdownMenuEntries: IngredientDetailDto.UNITS
-              .map<DropdownMenuEntry<String>>((String value) {
-            return DropdownMenuEntry<String>(value: value, label: value);
-          }).toList(),
+        IconButton(
+            onPressed: () {
+              _deleteIngredient(widget.ingredient);
+            },
+            icon: const Icon(
+                Icons.delete
+            )
         )
       ],
     );
   }
 
-  void _updateIngredient() {
-    widget.onUpdate(
-      IngredientDetailDto(
-        widget.ingredient.idIngredient,
-        nameController.text,
-        int.tryParse(quantityController.text) ?? 0,
-        unitController.text,
-      ),
-    );
-  }
 }

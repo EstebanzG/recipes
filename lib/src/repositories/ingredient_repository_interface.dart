@@ -8,5 +8,6 @@ abstract class IIngredientRepository {
   Future<List<IngredientData>>? getByRecipeId(int id);
   Future<void> insert(IngredientData ingredientData);
   Future<void> updates(List<IngredientDetailDto> recipes, int idRecipe);
-  Future<void> deleteAllIngredientFromRecipe(RecipeDetailDto recipeDetailDto);
-}
+  Future<int> deleteAllIngredientFromRecipe(RecipeDetailDto recipeDetailDto);
+  void deleteAll(List<IngredientDetailDto> ingredients);
+  }

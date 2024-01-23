@@ -11,8 +11,9 @@ class IngredientRepository implements IIngredientRepository {
   }
 
   @override
-  Future<void> deleteAllIngredientFromRecipe(RecipeDetailDto recipeDetailDto) async {
-    database.ingredient.delete().where((ingredient) =>
+  Future<int> deleteAllIngredientFromRecipe(
+      RecipeDetailDto recipeDetailDto) async {
+    return database.ingredient.deleteWhere((ingredient) =>
         ingredient.idRecipe.equals(recipeDetailDto.idRecipe ?? 0));
   }
 
@@ -22,7 +23,7 @@ class IngredientRepository implements IIngredientRepository {
   }
 
   @override
-  Future<void> insert(IngredientData recipe) {
+  Future<void> insert(IngredientData ingredientData) {
     throw UnimplementedError();
   }
 
@@ -30,7 +31,6 @@ class IngredientRepository implements IIngredientRepository {
   Future<void> updates(
       List<IngredientDetailDto> ingredients, int idRecipe) async {
     for (var ingredient in ingredients) {
-
       IngredientCompanion ingredientCompanion = IngredientCompanion.insert(
           idRecipe: idRecipe,
           name: ingredient.name,
@@ -47,8 +47,19 @@ class IngredientRepository implements IIngredientRepository {
       }
 
       await database.transaction(() async {
-        await database.into(database.ingredient).insert(ingredientCompanion, mode: InsertMode.insertOrReplace);
+        await database
+            .into(database.ingredient)
+            .insert(ingredientCompanion, mode: InsertMode.insertOrReplace);
       });
+    }
+  }
+
+  @override
+  void deleteAll(List<IngredientDetailDto> ingredients) {
+    for (var ingredient in ingredients) {
+      database.ingredient.deleteOne(IngredientCompanion(
+        idIngredient: Value(ingredient.idIngredient ?? 0),
+      ));
     }
   }
 }

@@ -32,6 +32,8 @@ class _FormPageState extends State<FormPage> {
     IngredientDetailDto(null, "", null, ""),
   ];
 
+  List<IngredientDetailDto> ingredientsToDelete = [];
+
   @override
   void initState() {
     super.initState();
@@ -45,16 +47,20 @@ class _FormPageState extends State<FormPage> {
     }
   }
 
+  void deleteIngredient(IngredientDetailDto ingredient) {
+    ingredients.remove(ingredient);
+    ingredientsToDelete.add(ingredient);
+    setState(() {});
+  }
+
   void duplicateIngredient() {
-    setState(() {
-      ingredients.add(IngredientDetailDto(null, "", 0, ""));
-    });
+    ingredients.add(IngredientDetailDto(null, "", 0, ""));
+    setState(() {});
   }
 
   void updateIngredient(int index, IngredientDetailDto ingredient) {
-    setState(() {
-      ingredients[index] = ingredient;
-    });
+    ingredients[index] = ingredient;
+    setState(() {});
   }
 
   void registerRecipe(BuildContext context) {
@@ -71,6 +77,7 @@ class _FormPageState extends State<FormPage> {
     } else {
       addNewRecipe(context, recipe);
     }
+    recipeService.deleteIngredients(ingredientsToDelete);
   }
 
   void updateRecipe(BuildContext context, RecipeDetailDto recipe) {
@@ -187,9 +194,13 @@ class _FormPageState extends State<FormPage> {
                     ),
                     for (int index = 0; index < ingredients.length; index++)
                       IngredientForm(
+                        key: UniqueKey(),
                         ingredient: ingredients[index],
                         onUpdate: (IngredientDetailDto ingredient) {
                           updateIngredient(index, ingredient);
+                        },
+                        onIngredientDelete: (IngredientDetailDto ingredient) {
+                          deleteIngredient(ingredient);
                         },
                       ),
                     ElevatedButton.icon(
