@@ -62,7 +62,7 @@ class RecipeRepository implements IRecipeRepository {
       database.into(database.ingredient).insert(IngredientCompanion.insert(
             idRecipe: recipeId,
             name: ingredient.name,
-            quantity: ingredient.quantity,
+            quantity: ingredient.quantity ?? 0,
             unit: ingredient.unit,
           ));
     }

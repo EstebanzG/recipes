@@ -11,7 +11,7 @@ class IngredientDetailDto {
 
   late String name;
 
-  late int quantity;
+  late int? quantity;
 
   late String unit;
 

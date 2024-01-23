@@ -26,9 +26,10 @@ class _FormPageState extends State<FormPage> {
 
   final TextEditingController titleInputController = TextEditingController();
   final TextEditingController durationInputController = TextEditingController();
-  final TextEditingController descriptionInputController = TextEditingController();
+  final TextEditingController descriptionInputController =
+      TextEditingController();
   List<IngredientDetailDto> ingredients = [
-    IngredientDetailDto(null, "", 0, ""),
+    IngredientDetailDto(null, "", null, ""),
   ];
 
   @override
@@ -184,34 +185,40 @@ class _FormPageState extends State<FormPage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: SizedBox(
-                            height: 200,
-                            child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: ingredients.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Row(children: [
-                                  IngredientForm(
-                                    ingredient: ingredients[index],
-                                    onUpdate: (IngredientDetailDto ingredient) {
-                                      updateIngredient(index, ingredient);
-                                    },
-                                  ),
-                                  const SizedBox(width: 20)
-                                ]);
-                              },
-                            ))),
-                    ElevatedButton(
+                    for (int index = 0; index < ingredients.length; index++)
+                      IngredientForm(
+                        ingredient: ingredients[index],
+                        onUpdate: (IngredientDetailDto ingredient) {
+                          updateIngredient(index, ingredient);
+                        },
+                      ),
+                    ElevatedButton.icon(
                       onPressed: duplicateIngredient,
-                      child: const Text('Add Ingredient'),
+                      icon: const Icon(
+                        Icons.add_circle_outlined,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(),
+                        fixedSize:
+                            Size(MediaQuery.of(context).size.width - 50, 40),
+                        backgroundColor: Colors.grey[100],
+                        foregroundColor: Colors.black,
+                      ),
+                      label: const Text('Ajouter un ingrédient'),
                     ),
-                    ElevatedButton(
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    ElevatedButton.icon(
                       onPressed: () {
                         registerRecipe(context);
                       },
-                      child: const Text('Submit'),
+                      icon: const Icon(Icons.check),
+                      label: const Text('Enregistrer la recette'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[100],
+                        foregroundColor: Colors.black
+                      ),
                     ),
                     const SizedBox(
                       height: 10,

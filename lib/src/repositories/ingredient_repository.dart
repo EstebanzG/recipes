@@ -34,7 +34,7 @@ class IngredientRepository implements IIngredientRepository {
       IngredientCompanion ingredientCompanion = IngredientCompanion.insert(
           idRecipe: idRecipe,
           name: ingredient.name,
-          quantity: ingredient.quantity,
+          quantity: ingredient.quantity ?? 0,
           unit: ingredient.unit);
 
       if (ingredient.idIngredient != null) {
@@ -42,7 +42,7 @@ class IngredientRepository implements IIngredientRepository {
             idIngredient: Value(ingredient.idIngredient ?? 0),
             idRecipe: idRecipe,
             name: ingredient.name,
-            quantity: ingredient.quantity,
+            quantity: ingredient.quantity ?? 0,
             unit: ingredient.unit);
       }
 
