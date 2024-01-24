@@ -51,7 +51,14 @@ class DetailPage extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => FormPage(
-                                      recipe: recipe,
+                                      recipe: RecipeDetailDto(
+                                        recipe.idRecipe,
+                                        recipe.favorite,
+                                        recipe.title,
+                                        recipe.description,
+                                        recipe.duration,
+                                        recipe.ingredients
+                                      ),
                                       recipesCubit: recipesCubit,
                                     )),
                           );

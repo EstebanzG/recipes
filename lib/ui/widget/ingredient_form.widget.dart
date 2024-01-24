@@ -26,17 +26,20 @@ class _IngredientFormState extends State<IngredientForm> {
   @override
   void initState() {
     super.initState();
+    initializeControllers();
+  }
+
+  void initializeControllers() {
     nameController.text = widget.ingredient.name;
     quantityController.text = widget.ingredient.quantity.toString();
     unitController.text = widget.ingredient.unit;
   }
 
-  void _deleteIngredient(IngredientDetailDto ingredientDetailDto) {
-    widget.onIngredientDelete(ingredientDetailDto);
+  void deleteIngredient() {
+    widget.onIngredientDelete(widget.ingredient);
   }
 
-
-  void _updateIngredient() {
+  void updateIngredient() {
     widget.onUpdate(
       IngredientDetailDto(
         widget.ingredient.idIngredient,
@@ -53,59 +56,67 @@ class _IngredientFormState extends State<IngredientForm> {
       direction: Axis.horizontal,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width / 4,
-          child: TextFormField(
-            controller: nameController,
-            onChanged: (_) => _updateIngredient(),
-            decoration: const InputDecoration(
-              hintText: 'Ingredient',
-              labelText: 'Ingredient',
-            ),
-          ),
-        ),
-        Flex(
-            direction: Axis.vertical,
-            children: [
-              SizedBox(
-                width:
-                MediaQuery.of(context).size.width / 3, // Adjust width as needed
-                child: TextFormField(
-                  controller: quantityController,
-                  onChanged: (_) => _updateIngredient(),
-                  decoration: const InputDecoration(
-                    hintText: 'Quantity',
-                    labelText: 'Quantity',
-                  ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                ),
-              ),
-              DropdownMenu(
-                width: MediaQuery.of(context).size.width / 3,
-                controller: unitController,
-                initialSelection: IngredientDetailDto.UNITS.first,
-                onSelected: (_) => _updateIngredient(),
-                dropdownMenuEntries: IngredientDetailDto.UNITS
-                    .map<DropdownMenuEntry<String>>((String value) {
-                  return DropdownMenuEntry<String>(value: value, label: value);
-                }).toList(),
-              ),
-
-            ],
-        ),
-        IconButton(
-            onPressed: () {
-              _deleteIngredient(widget.ingredient);
-            },
-            icon: const Icon(
-                Icons.delete
-            )
-        )
+        buildNameTextField(),
+        buildQuantityAndUnitFields(),
+        buildDeleteButton(),
       ],
     );
   }
 
+  Widget buildNameTextField() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 4,
+      child: TextFormField(
+        controller: nameController,
+        onChanged: (_) => updateIngredient(),
+        decoration: const InputDecoration(
+          hintText: 'Ingredient',
+          labelText: 'Ingredient',
+        ),
+      ),
+    );
+  }
+
+  Widget buildQuantityAndUnitFields() {
+    return Flex(
+      direction: Axis.vertical,
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width / 3,
+          child: TextFormField(
+            controller: quantityController,
+            onChanged: (_) => updateIngredient(),
+            decoration: const InputDecoration(
+              hintText: 'Quantity',
+              labelText: 'Quantity',
+            ),
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+          ),
+        ),
+        DropdownMenu(
+          width: MediaQuery.of(context).size.width / 3,
+          controller: unitController,
+          initialSelection: IngredientDetailDto.UNITS.first,
+          onSelected: (_) => updateIngredient(),
+          dropdownMenuEntries: IngredientDetailDto.UNITS
+              .map<DropdownMenuEntry<String>>((String value) {
+            return DropdownMenuEntry<String>(value: value, label: value);
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget buildDeleteButton() {
+    return IconButton(
+      onPressed: deleteIngredient,
+      icon: const Icon(
+        Icons.delete,
+      ),
+    );
+  }
 }
+
