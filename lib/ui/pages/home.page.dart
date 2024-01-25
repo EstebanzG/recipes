@@ -7,7 +7,7 @@ import '../cubit/recipes.cubit.dart';
 import '../cubit/recipes.states.dart';
 import '../widget/favorite_recipes.widget.dart';
 import '../widget/header.widget.dart';
-import '../widget/others_recipes.widget.dart';
+import '../widget/list_recipes.widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(children: [
               const Header(),
               FavoriteRecipes(recipes: recipes),
-              OtherRecipes(recipes: recipes)
+              ListRecipes(recipes: recipes)
             ]),
           ),
         ),

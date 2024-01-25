@@ -52,54 +52,86 @@ class _IngredientFormState extends State<IngredientForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Flex(
-      direction: Axis.horizontal,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        buildNameTextField(),
-        buildQuantityAndUnitFields(),
-        buildDeleteButton(),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(width: 1, color: Colors.grey.shade200),
+        )
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Flex(
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                buildNameTextField(),
+                buildQuantityAndUnitFields(),
+              ],
+            ),
+            buildDeleteButton(),
+          ],
+        ),
+      ),
     );
   }
 
   Widget buildNameTextField() {
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 4,
+      width: MediaQuery.of(context).size.width / 1.5,
       child: TextFormField(
         controller: nameController,
         onChanged: (_) => updateIngredient(),
         decoration: const InputDecoration(
-          hintText: 'Ingredient',
-          labelText: 'Ingredient',
+          hintText: 'Quel ingrédient ajouter ?',
+          labelText: 'Nom de l\'ingredient',
+          prefixIcon: Icon(Icons.set_meal_outlined),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Le nom de l\'ingredient est obligatoire';
+          }
+          return null;
+        },
       ),
     );
   }
 
   Widget buildQuantityAndUnitFields() {
     return Flex(
-      direction: Axis.vertical,
+      direction: Axis.horizontal,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          width: MediaQuery.of(context).size.width / 3,
+          width: MediaQuery.of(context).size.width / 4,
           child: TextFormField(
             controller: quantityController,
             onChanged: (_) => updateIngredient(),
             decoration: const InputDecoration(
-              hintText: 'Quantity',
-              labelText: 'Quantity',
+              hintText: 'Quantité',
+              labelText: 'Quantité',
             ),
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'La quantité est obligatoire';
+              }
+              return null;
+            },
           ),
         ),
         DropdownMenu(
-          width: MediaQuery.of(context).size.width / 3,
+          width: MediaQuery.of(context).size.width / 2.5,
           controller: unitController,
           initialSelection: IngredientDetailDto.UNITS.first,
+          inputDecorationTheme: const InputDecorationTheme(
+            border: InputBorder.none,
+          ),
           onSelected: (_) => updateIngredient(),
           dropdownMenuEntries: IngredientDetailDto.UNITS
               .map<DropdownMenuEntry<String>>((String value) {
@@ -119,4 +151,3 @@ class _IngredientFormState extends State<IngredientForm> {
     );
   }
 }
-

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:toastification/toastification.dart';
 import '../../data/dto/ingredient_detail_dto.dart';
 import '../../data/dto/recipe_detail_dto.dart';
 import '../../src/services/recipe_service.dart';
@@ -21,13 +22,14 @@ class FormPage extends StatefulWidget {
 }
 
 class _FormPageState extends State<FormPage> {
+  final _formKey = GlobalKey<FormState>();
   final RecipeService recipeService = RecipeService();
   final TextEditingController titleInputController = TextEditingController();
   final TextEditingController durationInputController = TextEditingController();
   final TextEditingController descriptionInputController =
       TextEditingController();
   List<IngredientDetailDto> ingredients = [
-    IngredientDetailDto(null, "", null, "")
+    IngredientDetailDto(null, "", 0, "")
   ];
   List<IngredientDetailDto> ingredientsToDelete = [];
 
@@ -55,7 +57,8 @@ class _FormPageState extends State<FormPage> {
   }
 
   int getNextId() {
-    List<int?> ids = ingredients.map((ingredient) => ingredient.idIngredient).toList();
+    List<int?> ids =
+        ingredients.map((ingredient) => ingredient.idIngredient).toList();
     int nextId = 0;
     while (ids.contains(nextId)) {
       nextId = nextId + 1;
@@ -82,7 +85,7 @@ class _FormPageState extends State<FormPage> {
       false,
       titleInputController.text,
       descriptionInputController.text,
-      int.parse(durationInputController.text),
+      int.tryParse(durationInputController.text) ?? 0,
       List.from(ingredients),
     );
     if (widget.recipe is RecipeDetailDto) {
@@ -96,8 +99,7 @@ class _FormPageState extends State<FormPage> {
   void updateRecipe(BuildContext context, RecipeDetailDto recipe) {
     recipeService.updateRecipe(recipe);
     widget.recipesCubit.updateExistingRecipe(recipe);
-    Navigator.pop(context);
-    Navigator.pop(context);
+    Navigator.pop(context, recipe);
   }
 
   void addNewRecipe(BuildContext context, RecipeDetailDto recipe) {
@@ -113,6 +115,7 @@ class _FormPageState extends State<FormPage> {
         bottom: false,
         child: SingleChildScrollView(
           child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 buildHeader(context),
@@ -142,7 +145,7 @@ class _FormPageState extends State<FormPage> {
               Icons.arrow_back_rounded,
               color: Colors.black,
               size: 35.0,
-              semanticLabel: 'back to Homepage',
+              semanticLabel: 'Retour',
             ),
           ),
         ),
@@ -155,33 +158,48 @@ class _FormPageState extends State<FormPage> {
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
-          buildTextFormField(
+          TextFormField(
             controller: titleInputController,
-            icon: Icons.set_meal,
-            hintText: 'How this recipe is called',
-            labelText: 'Name',
+            decoration: const InputDecoration(
+              hintText: 'Nom de la recette',
+              labelText: 'Comment s\'appelle-t-elle ?',
+              prefixIcon: Icon(Icons.fastfood),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Le nom de la recette est obligatoire';
+              }
+              return null;
+            },
           ),
-          buildTextFormField(
+          TextFormField(
             controller: durationInputController,
-            icon: Icons.timer_outlined,
-            hintText: 'How long is the recipe',
-            labelText: 'Duration',
+            decoration: const InputDecoration(
+              hintText: 'Temps de réalisation',
+              labelText: 'En combien de temps l\'a réalise-t-on ?',
+              prefixIcon: Icon(Icons.timer_outlined),
+            ),
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
           ),
-          buildTextFormField(
+          TextFormField(
             controller: descriptionInputController,
-            icon: Icons.description,
-            hintText: 'Describe the process of creation',
-            labelText: 'Process',
-            maxLines: 10,
+            decoration: const InputDecoration(
+              hintText: 'Quelles sont ses étapes de création ?',
+              labelText: 'Description de la réalisation',
+              prefixIcon: Icon(Icons.description),
+            ),
+            maxLines: 7,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           buildIngredientForms(context),
+          const SizedBox(
+            height: 15,
+          ),
           ElevatedButton.icon(
             onPressed: duplicateIngredient,
             icon: const Icon(Icons.add_circle_outlined),
@@ -198,7 +216,11 @@ class _FormPageState extends State<FormPage> {
           ),
           ElevatedButton.icon(
             onPressed: () {
-              registerRecipe(context);
+              if (ingredients.isEmpty) {
+                buildToastMissingIngredientWidget(context);
+              } else if (_formKey.currentState!.validate()) {
+                registerRecipe(context);
+              }
             },
             icon: const Icon(Icons.check),
             label: const Text('Enregistrer la recette'),
@@ -215,36 +237,25 @@ class _FormPageState extends State<FormPage> {
     );
   }
 
-  Widget buildTextFormField({
-    required TextEditingController controller,
-    required IconData icon,
-    required String hintText,
-    required String labelText,
-    int? maxLines,
-    TextInputType? keyboardType,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        icon: Icon(
-          icon,
-          color: Colors.black,
-          size: 35.0,
-          semanticLabel: labelText,
-        ),
-        hintText: hintText,
-        labelText: labelText,
+  void buildToastMissingIngredientWidget(BuildContext context) {
+    toastification.show(
+      context: context,
+      title: RichText(
+        text: const TextSpan(
+            text: "Information manquante",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black)),
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null;
-      },
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
+      description: RichText(
+        text: TextSpan(
+            text: "Au moins un ingrédient est nécessaire",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700)),
+      ),
+      autoCloseDuration: const Duration(seconds: 3),
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
     );
   }
 
@@ -253,7 +264,7 @@ class _FormPageState extends State<FormPage> {
       children: [
         for (int index = 0; index < ingredients.length; index++)
           IngredientForm(
-            key: ValueKey(ingredients[index].idIngredient), // Use the unique identifier as a key
+            key: ValueKey(ingredients[index].idIngredient),
             ingredient: ingredients[index],
             onUpdate: (IngredientDetailDto ingredient) {
               updateIngredient(index, ingredient);

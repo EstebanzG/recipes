@@ -20,8 +20,11 @@ class RecipeDetailDto {
 
   @override
   String toString() {
-    return 'RecipeDetailDto{idRecipe: $idRecipe, favorite: $favorite, title: $title, description: $description, duration: $duration, ingredients: $ingredients}';
-  }
+    String message = "Recette : $title\nTemps de préparation : ${duration}mins\nIngrédients:\n";
+    for (var ingredient in ingredients) {
+      message += "- ${ingredient.name} - ${ingredient.quantity} ${ingredient.unit}\n";
+    }
+    return message += "Déroulé de la recette :\n $description";  }
 
   @override
   bool operator ==(Object other) =>

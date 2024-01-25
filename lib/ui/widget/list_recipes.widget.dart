@@ -6,19 +6,19 @@ import 'package:recipes/src/services/recipe_service.dart';
 import '../cubit/recipes.cubit.dart';
 import 'recipe_card.widget.dart';
 
-class OtherRecipes extends StatefulWidget {
+class ListRecipes extends StatefulWidget {
   final List<RecipeDetailDto> recipes;
 
-  const OtherRecipes({
+  const ListRecipes({
     super.key,
     required this.recipes,
   });
 
   @override
-  State<OtherRecipes> createState() => _OtherRecipesState();
+  State<ListRecipes> createState() => _ListRecipesState();
 }
 
-class _OtherRecipesState extends State<OtherRecipes> {
+class _ListRecipesState extends State<ListRecipes> {
   final TextEditingController searchBarController = TextEditingController();
   final RecipeService recipeService = RecipeService();
   late List<RecipeDetailDto> filteredRecipes = [];
@@ -30,7 +30,7 @@ class _OtherRecipesState extends State<OtherRecipes> {
   }
 
   @override
-  void didUpdateWidget(covariant OtherRecipes oldWidget) {
+  void didUpdateWidget(covariant ListRecipes oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.recipes != oldWidget.recipes) {
       reloadFilteredRecipes(searchBarController.text);
@@ -57,7 +57,7 @@ class _OtherRecipesState extends State<OtherRecipes> {
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Ou cherche parmi tes ',
+                      text: 'Ou cherchez parmi vos ',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 15,

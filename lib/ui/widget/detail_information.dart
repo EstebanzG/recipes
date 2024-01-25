@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../data/dto/recipe_detail_dto.dart';
 import '../../src/services/recipe_service.dart';
@@ -40,6 +41,10 @@ class _DetailInformationState extends State<DetailInformation> {
     recipeService.updateRecipe(widget.recipe);
   }
 
+  void shareRecipe() {
+    Share.share(widget.recipe.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -50,12 +55,15 @@ class _DetailInformationState extends State<DetailInformation> {
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                widget.recipe.title,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 50,
+                child: Text(
+                  widget.recipe.title,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -70,11 +78,14 @@ class _DetailInformationState extends State<DetailInformation> {
               Flex(
                 direction: Axis.vertical,
                 children: [
-                  const Icon(
-                    Icons.timer_outlined,
-                    color: Colors.black,
-                    size: 35.0,
-                    semanticLabel: 'duration',
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.timer_outlined,
+                      color: Colors.black,
+                      size: 35.0,
+                      semanticLabel: 'temps de réalisation',
+                    ),
                   ),
                   Text(
                     '${widget.recipe.duration} minutes',
@@ -97,11 +108,15 @@ class _DetailInformationState extends State<DetailInformation> {
                       isFavorite ? Icons.favorite : Icons.favorite_border,
                       color: Colors.black,
                       size: 35.0,
-                      semanticLabel: 'add to favorite',
+                      semanticLabel: isFavorite
+                          ? 'Supprimer des favoris'
+                          : 'Ajouter aux favoris',
                     ),
                   ),
                   Text(
-                    isFavorite ? 'Supprimer des favoris' : 'Ajouter aux favoris',
+                    isFavorite
+                        ? 'Supprimer des favoris'
+                        : 'Ajouter aux favoris',
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 15,
@@ -110,16 +125,21 @@ class _DetailInformationState extends State<DetailInformation> {
                   ),
                 ],
               ),
-              const Flex(
+              Flex(
                 direction: Axis.vertical,
                 children: [
-                  Icon(
-                    Icons.share,
-                    color: Colors.black,
-                    size: 35.0,
-                    semanticLabel: 'share',
+                  IconButton(
+                    onPressed: () {
+                      shareRecipe();
+                    },
+                    icon: const Icon(
+                      Icons.share,
+                      color: Colors.black,
+                      size: 35.0,
+                      semanticLabel: 'partager',
+                    ),
                   ),
-                  Text(
+                  const Text(
                     'Partager',
                     style: TextStyle(
                       color: Colors.black,
@@ -132,10 +152,20 @@ class _DetailInformationState extends State<DetailInformation> {
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 15,
           ),
           Column(
             children: [
+              Row(children: [
+                Text(
+                  'Ingrédients :',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    color: Colors.grey.shade800
+                  ),
+                ),
+              ]),
               for (var ingredient in widget.recipe.ingredients)
                 Row(
                   children: [
@@ -150,17 +180,33 @@ class _DetailInformationState extends State<DetailInformation> {
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 15,
           ),
-          Text(
-            widget.recipe.description,
-            textAlign: TextAlign.justify,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-            ),
+          Row(
+            children: [
+              Text(
+                'Description :',
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    color: Colors.grey.shade800
+                ),
+              ),
+            ],
           ),
+          Row(
+            children: [
+              Text(
+                widget.recipe.description,
+                textAlign: TextAlign.justify,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );

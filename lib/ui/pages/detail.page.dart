@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
+import '../../data/dto/recipe_detail_dto.dart';
 import '../cubit/recipes.cubit.dart';
 import '../widget/detail_information.dart';
 import 'form.page.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final RecipeDetailDto recipe;
   final RecipesCubit recipesCubit;
 
   const DetailPage({
-    super.key,
+    Key? key,
     required this.recipe,
     required this.recipesCubit,
-  });
+  }) : super(key: key);
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  late RecipeDetailDto localRecipe;
+
+  @override
+  void initState() {
+    super.initState();
+    localRecipe = widget.recipe;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,32 +55,32 @@ class DetailPage extends StatelessWidget {
                           Icons.arrow_back_rounded,
                           color: Colors.black,
                           size: 35.0,
-                          semanticLabel: 'back to Homepage',
+                          semanticLabel: 'Retour',
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          var updatedRecipe = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => FormPage(
-                                      recipe: RecipeDetailDto(
-                                        recipe.idRecipe,
-                                        recipe.favorite,
-                                        recipe.title,
-                                        recipe.description,
-                                        recipe.duration,
-                                        recipe.ingredients
-                                      ),
-                                      recipesCubit: recipesCubit,
-                                    )),
+                              builder: (context) => FormPage(
+                                recipe: localRecipe,
+                                recipesCubit: widget.recipesCubit,
+                              ),
+                            ),
                           );
+
+                          if (updatedRecipe != null) {
+                           setState(() {
+                             localRecipe = updatedRecipe;
+                           });
+                          }
                         },
                         icon: const Icon(
                           Icons.mode_edit_outline,
                           color: Colors.black,
                           size: 35.0,
-                          semanticLabel: 'Modify recipe',
+                          semanticLabel: 'Modifier la recette',
                         ),
                       ),
                     ],
@@ -75,7 +88,7 @@ class DetailPage extends StatelessWidget {
                 ),
               ],
             ),
-            DetailInformation(recipe: recipe, recipesCubit: recipesCubit)
+            DetailInformation(recipe: localRecipe, recipesCubit: widget.recipesCubit)
           ]),
         ),
       ),

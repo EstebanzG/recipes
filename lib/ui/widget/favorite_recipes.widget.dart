@@ -49,7 +49,7 @@ class _FavoriteRecipesState extends State<FavoriteRecipes> {
           TextSpan(
             children: [
               TextSpan(
-                text: 'Explore tes recettes ',
+                text: 'Explorez vos recettes ',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 15,
