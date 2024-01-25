@@ -10,9 +10,9 @@ class FavoriteRecipes extends StatefulWidget {
   final List<RecipeDetailDto> recipes;
 
   const FavoriteRecipes({
-    super.key,
+    Key? key,
     required this.recipes,
-  });
+  }) : super(key: key);
 
   @override
   State<FavoriteRecipes> createState() => _FavoriteRecipesState();
@@ -25,77 +25,92 @@ class _FavoriteRecipesState extends State<FavoriteRecipes> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
-    });
+    _updateFavoriteRecipes();
   }
 
   @override
   void didUpdateWidget(covariant FavoriteRecipes oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.recipes != oldWidget.recipes) {
-      setState(() {
-        favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
-      });
+      _updateFavoriteRecipes();
     }
+  }
+
+  void _updateFavoriteRecipes() {
+    setState(() {
+      favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const Center(
-        child:
-        Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: 'Explorez vos recettes ',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
+    return Column(
+      children: [
+        _buildHeaderText(),
+        favoriteRecipes.isEmpty
+            ? const Text("Vous n'avez aucune recette favorite 😞")
+            : _buildRecipesList(),
+      ],
+    );
+  }
+
+  Widget _buildHeaderText() {
+    return const Center(
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: 'Explorez vos recettes ',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
               ),
-              TextSpan(
-                text: 'favorites',
-                style: TextStyle(
-                  color: Color(0xFFD52A2A),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  decoration: TextDecoration.underline,
-                ),
+            ),
+            TextSpan(
+              text: 'favorites',
+              style: TextStyle(
+                color: Color(0xFFD52A2A),
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                decoration: TextDecoration.underline,
               ),
-              TextSpan(
-                text: ' ❤️️',
-                style: TextStyle(
-                  color: Color(0xFFD52929),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
+            ),
+            TextSpan(
+              text: ' ❤️️',
+              style: TextStyle(
+                color: Color(0xFFD52929),
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-      favoriteRecipes.isEmpty ?
-      const Text("Vous n'avez aucune recette favorite 😞")
-          :
-      Padding(
-          padding: const EdgeInsets.only(left: 20, top: 10),
-          child: SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: favoriteRecipes.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Row(children: [
-                    RecipeCard(
-                        recipe: favoriteRecipes[index],
-                        recipesCubit: BlocProvider.of<RecipesCubit>(context)),
-                    const SizedBox(width: 40)
-                  ]);
-                },
-              )))
-    ]);
+    );
+  }
+
+  Widget _buildRecipesList() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, top: 10),
+      child: SizedBox(
+        height: 200,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: favoriteRecipes.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Row(
+              children: [
+                RecipeCard(
+                  recipe: favoriteRecipes[index],
+                  recipesCubit: BlocProvider.of<RecipesCubit>(context),
+                ),
+                const SizedBox(width: 40),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }

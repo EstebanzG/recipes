@@ -30,6 +30,7 @@ class RecipeRepository implements IRecipeRepository {
     var recipeId =
         await database.into(database.recipe).insert(RecipeCompanion.insert(
               title: recipe.title,
+              category: recipe.category,
               favorite: recipe.favorite,
               description: recipe.description,
               duration: recipe.duration,
@@ -44,6 +45,7 @@ class RecipeRepository implements IRecipeRepository {
         idRecipe: recipe.idRecipe ?? 0,
         favorite: recipe.favorite,
         title: recipe.title,
+        category: recipe.category,
         description: recipe.description,
         duration: recipe.duration));
   }
@@ -53,6 +55,7 @@ class RecipeRepository implements IRecipeRepository {
     var recipeId =
         await database.into(database.recipe).insert(RecipeCompanion.insert(
               title: recipe.title,
+              category: recipe.category,
               favorite: recipe.favorite,
               description: recipe.description,
               duration: recipe.duration,

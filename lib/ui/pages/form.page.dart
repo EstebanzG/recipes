@@ -25,6 +25,7 @@ class _FormPageState extends State<FormPage> {
   final _formKey = GlobalKey<FormState>();
   final RecipeService recipeService = RecipeService();
   final TextEditingController titleInputController = TextEditingController();
+  final TextEditingController categoryInputController = TextEditingController();
   final TextEditingController durationInputController = TextEditingController();
   final TextEditingController descriptionInputController =
       TextEditingController();
@@ -42,6 +43,7 @@ class _FormPageState extends State<FormPage> {
   void initializeForm() {
     if (widget.recipe is RecipeDetailDto) {
       titleInputController.text = widget.recipe!.title;
+      categoryInputController.text = widget.recipe!.category;
       durationInputController.text = widget.recipe!.duration.toString();
       descriptionInputController.text = widget.recipe!.description;
       if (widget.recipe!.ingredients.isNotEmpty) {
@@ -84,6 +86,7 @@ class _FormPageState extends State<FormPage> {
       widget.recipe?.idRecipe,
       false,
       titleInputController.text,
+      categoryInputController.text,
       descriptionInputController.text,
       int.tryParse(durationInputController.text) ?? 0,
       List.from(ingredients),
@@ -172,11 +175,24 @@ class _FormPageState extends State<FormPage> {
               return null;
             },
           ),
+          DropdownMenu(
+            width: MediaQuery.of(context).size.width,
+            controller: categoryInputController,
+            initialSelection: categoryInputController.text,
+            inputDecorationTheme: const InputDecorationTheme(
+              border: InputBorder.none,
+            ),
+            hintText: 'Catégorie',
+            dropdownMenuEntries: RecipeDetailDto.CATEGORIES
+                .map<DropdownMenuEntry<String>>((String value) {
+              return DropdownMenuEntry<String>(value: value, label: value);
+            }).toList(),
+          ),
           TextFormField(
             controller: durationInputController,
             decoration: const InputDecoration(
               hintText: 'Temps de réalisation',
-              labelText: 'En combien de temps l\'a réalise-t-on ?',
+              labelText: 'En combien de temps (minutes) l\'a réalise-t-on ?',
               prefixIcon: Icon(Icons.timer_outlined),
             ),
             keyboardType: TextInputType.number,

@@ -11,10 +11,10 @@ class RecipeCard extends StatelessWidget {
   final RecipesCubit recipesCubit;
 
   RecipeCard({
-    super.key,
+    Key? key,
     required this.recipe,
     required this.recipesCubit,
-  });
+  }) : super(key: key);
 
   void deleteRecipe() {
     recipeService.deleteRecipe(recipe);
@@ -29,77 +29,82 @@ class RecipeCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DetailPage(
-                    recipe: recipe,
-                    recipesCubit: recipesCubit,
-                  )),
+            builder: (context) => DetailPage(
+              recipe: recipe,
+              recipesCubit: recipesCubit,
+            ),
+          ),
         );
       },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(30))),
-            height: 200,
-            width: 175,
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: 100,
-                      width: 175,
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(217, 217, 217, 100),
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(30)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Flex(
-                        direction: Axis.horizontal,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                deleteRecipe();
-                              },
-                              icon: const Icon(
-                                Icons.delete_forever_outlined,
-                                color: Colors.white,
-                                size: 20.0,
-                                semanticLabel: 'delete recipe',
-                              ))
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                Flex(
-                  direction: Axis.vertical,
+      child: SizedBox(
+        height: 200,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          width: 175,
+          child: Column(
+            children: [
+              _buildTopContainer(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(recipe.title),
-                    Flex(
-                      direction: Axis.horizontal,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.timer_outlined,
-                        ),
-                        Text(recipe.duration.toString()),
-                      ],
-                    )
+                    _buildDurationRow(),
                   ],
-                )
-              ],
-            ),
-          )
-        ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+
+  Widget _buildTopContainer() {
+    return Stack(
+      children: [
+        Container(
+          height: 100,
+          width: 175,
+          decoration: const BoxDecoration(
+            color: Color.fromRGBO(217, 217, 217, 100),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () {
+                  deleteRecipe();
+                },
+                icon: const Icon(
+                  Icons.delete_forever_outlined,
+                  color: Colors.white,
+                  size: 20.0,
+                  semanticLabel: 'delete recipe',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDurationRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.timer_outlined),
+        Text(recipe.duration.toString()),
+      ],
     );
   }
 }

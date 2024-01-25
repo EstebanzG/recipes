@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipes/data/dto/ingredient_detail_dto.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../data/dto/recipe_detail_dto.dart';
@@ -10,10 +11,10 @@ class DetailInformation extends StatefulWidget {
   final RecipesCubit recipesCubit;
 
   const DetailInformation({
-    super.key,
+    Key? key,
     required this.recipe,
     required this.recipesCubit,
-  });
+  }) : super(key: key);
 
   @override
   State<DetailInformation> createState() => _DetailInformationState();
@@ -21,28 +22,137 @@ class DetailInformation extends StatefulWidget {
 
 class _DetailInformationState extends State<DetailInformation> {
   final RecipeService recipeService = RecipeService();
-  late bool isFavorite = false;
-  IconData favoriteIcon = Icons.favorite_border;
+  late bool isFavorite;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isFavorite = widget.recipe.favorite;
-    });
+    isFavorite = widget.recipe.favorite;
   }
 
   void manageFavorite() {
-    widget.recipe.favorite = !widget.recipe.favorite;
     setState(() {
-      isFavorite = widget.recipe.favorite;
+      isFavorite = !isFavorite;
     });
+    widget.recipe.favorite = isFavorite;
     widget.recipesCubit.updateExistingRecipe(widget.recipe);
     recipeService.updateRecipe(widget.recipe);
   }
 
   void shareRecipe() {
     Share.share(widget.recipe.toString());
+  }
+
+  Widget buildInfoItem(IconData icon, String text) {
+    return Flex(
+      direction: Axis.vertical,
+      children: [
+        IconButton(
+          onPressed: () {},
+          icon: Icon(
+            icon,
+            color: Colors.black,
+            size: 35.0,
+            semanticLabel: text,
+          ),
+        ),
+        Text(
+          text,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildActionItem(IconData icon, String label, Function() onPressed) {
+    return Flex(
+      direction: Axis.vertical,
+      children: [
+        IconButton(
+          onPressed: onPressed,
+          icon: Icon(
+            icon,
+            color: Colors.black,
+            size: 35.0,
+            semanticLabel: label,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildIngredientsList(List<IngredientDetailDto> ingredients) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              'Ingrédients :',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                color: Colors.grey.shade800,
+              ),
+            ),
+          ],
+        ),
+        for (var ingredient in ingredients)
+          Row(
+            children: [
+              Text(
+                '\u2022 ${ingredient.name} - ${ingredient.quantity} ${ingredient.unit}',
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          )
+      ],
+    );
+  }
+
+  Widget buildDescription(String description) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              'Description :',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                color: Colors.grey.shade800,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text(
+              description,
+              textAlign: TextAlign.justify,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
@@ -57,13 +167,28 @@ class _DetailInformationState extends State<DetailInformation> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width - 50,
-                child: Text(
-                  widget.recipe.title,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: widget.recipe.title,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: " - ${widget.recipe.category}",
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
                   ),
+
                 ),
               ),
             ],
@@ -75,138 +200,24 @@ class _DetailInformationState extends State<DetailInformation> {
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Flex(
-                direction: Axis.vertical,
-                children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.timer_outlined,
-                      color: Colors.black,
-                      size: 35.0,
-                      semanticLabel: 'temps de réalisation',
-                    ),
-                  ),
-                  Text(
-                    '${widget.recipe.duration} minutes',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
+              buildInfoItem(
+                  Icons.timer_outlined, '${widget.recipe.duration} minutes'),
+              buildActionItem(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                isFavorite ? 'Supprimer des favoris' : 'Ajouter aux favoris',
+                manageFavorite,
               ),
-              Flex(
-                direction: Axis.vertical,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      manageFavorite();
-                    },
-                    icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: Colors.black,
-                      size: 35.0,
-                      semanticLabel: isFavorite
-                          ? 'Supprimer des favoris'
-                          : 'Ajouter aux favoris',
-                    ),
-                  ),
-                  Text(
-                    isFavorite
-                        ? 'Supprimer des favoris'
-                        : 'Ajouter aux favoris',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              Flex(
-                direction: Axis.vertical,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      shareRecipe();
-                    },
-                    icon: const Icon(
-                      Icons.share,
-                      color: Colors.black,
-                      size: 35.0,
-                      semanticLabel: 'partager',
-                    ),
-                  ),
-                  const Text(
-                    'Partager',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              )
+              buildActionItem(Icons.share, 'Partager', shareRecipe),
             ],
           ),
           const SizedBox(
             height: 15,
           ),
-          Column(
-            children: [
-              Row(children: [
-                Text(
-                  'Ingrédients :',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                    color: Colors.grey.shade800
-                  ),
-                ),
-              ]),
-              for (var ingredient in widget.recipe.ingredients)
-                Row(
-                  children: [
-                    Text(
-                      '\u2022 ${ingredient.name} - ${ingredient.quantity} ${ingredient.unit}',
-                      style: const TextStyle(
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                )
-            ],
-          ),
+          buildIngredientsList(widget.recipe.ingredients),
           const SizedBox(
             height: 15,
           ),
-          Row(
-            children: [
-              Text(
-                'Description :',
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                    color: Colors.grey.shade800
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Text(
-                widget.recipe.description,
-                textAlign: TextAlign.justify,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          )
+          buildDescription(widget.recipe.description),
         ],
       ),
     );

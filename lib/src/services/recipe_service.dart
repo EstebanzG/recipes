@@ -13,8 +13,13 @@ class RecipeService {
     return await recipeRepository.getAll();
   }
 
-  List<RecipeDetailDto> getAllRecipesByName(List<RecipeDetailDto> recipes, String name) {
-    return recipes.where((recipe) => recipe.title.toLowerCase().contains(name.toLowerCase())).toList();
+  List<RecipeDetailDto> getAllRecipesByNameAndCategory(
+      List<RecipeDetailDto> recipes, String name, String category) {
+    return recipes
+        .where((recipe) =>
+            recipe.title.toLowerCase().contains(name.toLowerCase()) &&
+            (recipe.category == category || category == ""))
+        .toList();
   }
 
   void createNewRecipe(RecipeDetailDto recipeDto) {
@@ -32,7 +37,6 @@ class RecipeService {
     recipeRepository.delete(recipeDto);
   }
 
-
   void deleteIngredients(List<IngredientDetailDto> ingredients) {
     ingredientRepository.deleteAll(ingredients);
   }
@@ -43,6 +47,7 @@ class RecipeService {
         recipe.idRecipe,
         recipe.favorite,
         recipe.title,
+        recipe.category,
         recipe.description,
         recipe.duration,
         ingredients

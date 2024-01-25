@@ -1,11 +1,20 @@
 import 'ingredient_detail_dto.dart';
 
 class RecipeDetailDto {
+  static const CATEGORIES = [
+    'Apéritif',
+    'Entrée',
+    'Plat',
+    'Sucré',
+  ];
+
   late int? idRecipe;
 
   late bool favorite;
 
   late String title;
+
+  late String category;
 
   late String description;
 
@@ -14,9 +23,8 @@ class RecipeDetailDto {
   late List<IngredientDetailDto> ingredients;
 
 
-  RecipeDetailDto(this.idRecipe, this.favorite, this.title, this.description,
-      this.duration, this.ingredients);
-
+  RecipeDetailDto(this.idRecipe, this.favorite, this.title, this.category,
+      this.description, this.duration, this.ingredients);
 
   @override
   String toString() {
