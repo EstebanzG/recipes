@@ -49,6 +49,7 @@ class RecipeService {
         recipe.title,
         recipe.category,
         recipe.description,
+        recipe.imageUrl,
         recipe.duration,
         ingredients
             .map((ingredient) => IngredientDetailDto(ingredient.idIngredient,

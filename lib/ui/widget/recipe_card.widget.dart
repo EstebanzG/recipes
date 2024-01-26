@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
@@ -70,9 +72,12 @@ class RecipeCard extends StatelessWidget {
         Container(
           height: 100,
           width: 175,
-          decoration: const BoxDecoration(
-            color: Color.fromRGBO(217, 217, 217, 100),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(217, 217, 217, 100),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+            image: recipe.imageUrl != "" ? DecorationImage(
+              image: FileImage(File(recipe.imageUrl ?? "")),
+            ) : null,
           ),
         ),
         Padding(

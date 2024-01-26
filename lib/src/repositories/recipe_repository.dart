@@ -10,7 +10,9 @@ class RecipeRepository implements IRecipeRepository {
   }
 
   Future<List<RecipeData>> getAllRecipeByName(String name) async {
-    return await (database.recipe.select()..where((recipe) => recipe.title.contains(name))).get();
+    return await (database.recipe.select()
+          ..where((recipe) => recipe.title.contains(name)))
+        .get();
   }
 
   @override
@@ -31,6 +33,7 @@ class RecipeRepository implements IRecipeRepository {
         await database.into(database.recipe).insert(RecipeCompanion.insert(
               title: recipe.title,
               category: recipe.category,
+              imageUrl: recipe.imageUrl,
               favorite: recipe.favorite,
               description: recipe.description,
               duration: recipe.duration,
@@ -45,6 +48,7 @@ class RecipeRepository implements IRecipeRepository {
         idRecipe: recipe.idRecipe ?? 0,
         favorite: recipe.favorite,
         title: recipe.title,
+        imageUrl: recipe.imageUrl ?? "",
         category: recipe.category,
         description: recipe.description,
         duration: recipe.duration));
@@ -55,6 +59,7 @@ class RecipeRepository implements IRecipeRepository {
     var recipeId =
         await database.into(database.recipe).insert(RecipeCompanion.insert(
               title: recipe.title,
+              imageUrl: recipe.imageUrl ?? "",
               category: recipe.category,
               favorite: recipe.favorite,
               description: recipe.description,

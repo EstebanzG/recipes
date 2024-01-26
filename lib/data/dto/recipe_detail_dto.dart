@@ -18,13 +18,14 @@ class RecipeDetailDto {
 
   late String description;
 
+  late String? imageUrl;
+
   late int duration;
 
   late List<IngredientDetailDto> ingredients;
 
-
   RecipeDetailDto(this.idRecipe, this.favorite, this.title, this.category,
-      this.description, this.duration, this.ingredients);
+      this.description, this.imageUrl, this.duration, this.ingredients);
 
   @override
   String toString() {

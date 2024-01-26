@@ -29,6 +29,12 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
   late final GeneratedColumn<String> category = GeneratedColumn<String>(
       'Category', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _imageUrlMeta =
+      const VerificationMeta('imageUrl');
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+      'ImageUrl', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _favoriteMeta =
       const VerificationMeta('favorite');
   @override
@@ -52,7 +58,7 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
       type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [idRecipe, title, category, favorite, description, duration];
+      [idRecipe, title, category, imageUrl, favorite, description, duration];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -78,6 +84,12 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
           category.isAcceptableOrUnknown(data['Category']!, _categoryMeta));
     } else if (isInserting) {
       context.missing(_categoryMeta);
+    }
+    if (data.containsKey('ImageUrl')) {
+      context.handle(_imageUrlMeta,
+          imageUrl.isAcceptableOrUnknown(data['ImageUrl']!, _imageUrlMeta));
+    } else if (isInserting) {
+      context.missing(_imageUrlMeta);
     }
     if (data.containsKey('Favorite')) {
       context.handle(_favoriteMeta,
@@ -114,6 +126,8 @@ class $RecipeTable extends Recipe with TableInfo<$RecipeTable, RecipeData> {
           .read(DriftSqlType.string, data['${effectivePrefix}Title'])!,
       category: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}Category'])!,
+      imageUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}ImageUrl'])!,
       favorite: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}Favorite'])!,
       description: attachedDatabase.typeMapping
@@ -133,6 +147,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
   final int idRecipe;
   final String title;
   final String category;
+  final String imageUrl;
   final bool favorite;
   final String description;
   final int duration;
@@ -140,6 +155,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
       {required this.idRecipe,
       required this.title,
       required this.category,
+      required this.imageUrl,
       required this.favorite,
       required this.description,
       required this.duration});
@@ -149,6 +165,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
     map['id_recipe'] = Variable<int>(idRecipe);
     map['Title'] = Variable<String>(title);
     map['Category'] = Variable<String>(category);
+    map['ImageUrl'] = Variable<String>(imageUrl);
     map['Favorite'] = Variable<bool>(favorite);
     map['Description'] = Variable<String>(description);
     map['Duration'] = Variable<int>(duration);
@@ -160,6 +177,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
       idRecipe: Value(idRecipe),
       title: Value(title),
       category: Value(category),
+      imageUrl: Value(imageUrl),
       favorite: Value(favorite),
       description: Value(description),
       duration: Value(duration),
@@ -173,6 +191,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
       idRecipe: serializer.fromJson<int>(json['idRecipe']),
       title: serializer.fromJson<String>(json['title']),
       category: serializer.fromJson<String>(json['category']),
+      imageUrl: serializer.fromJson<String>(json['imageUrl']),
       favorite: serializer.fromJson<bool>(json['favorite']),
       description: serializer.fromJson<String>(json['description']),
       duration: serializer.fromJson<int>(json['duration']),
@@ -185,6 +204,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
       'idRecipe': serializer.toJson<int>(idRecipe),
       'title': serializer.toJson<String>(title),
       'category': serializer.toJson<String>(category),
+      'imageUrl': serializer.toJson<String>(imageUrl),
       'favorite': serializer.toJson<bool>(favorite),
       'description': serializer.toJson<String>(description),
       'duration': serializer.toJson<int>(duration),
@@ -195,6 +215,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
           {int? idRecipe,
           String? title,
           String? category,
+          String? imageUrl,
           bool? favorite,
           String? description,
           int? duration}) =>
@@ -202,6 +223,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
         idRecipe: idRecipe ?? this.idRecipe,
         title: title ?? this.title,
         category: category ?? this.category,
+        imageUrl: imageUrl ?? this.imageUrl,
         favorite: favorite ?? this.favorite,
         description: description ?? this.description,
         duration: duration ?? this.duration,
@@ -212,6 +234,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
           ..write('idRecipe: $idRecipe, ')
           ..write('title: $title, ')
           ..write('category: $category, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('favorite: $favorite, ')
           ..write('description: $description, ')
           ..write('duration: $duration')
@@ -220,8 +243,8 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(idRecipe, title, category, favorite, description, duration);
+  int get hashCode => Object.hash(
+      idRecipe, title, category, imageUrl, favorite, description, duration);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -229,6 +252,7 @@ class RecipeData extends DataClass implements Insertable<RecipeData> {
           other.idRecipe == this.idRecipe &&
           other.title == this.title &&
           other.category == this.category &&
+          other.imageUrl == this.imageUrl &&
           other.favorite == this.favorite &&
           other.description == this.description &&
           other.duration == this.duration);
@@ -238,6 +262,7 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
   final Value<int> idRecipe;
   final Value<String> title;
   final Value<String> category;
+  final Value<String> imageUrl;
   final Value<bool> favorite;
   final Value<String> description;
   final Value<int> duration;
@@ -245,6 +270,7 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
     this.idRecipe = const Value.absent(),
     this.title = const Value.absent(),
     this.category = const Value.absent(),
+    this.imageUrl = const Value.absent(),
     this.favorite = const Value.absent(),
     this.description = const Value.absent(),
     this.duration = const Value.absent(),
@@ -253,11 +279,13 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
     this.idRecipe = const Value.absent(),
     required String title,
     required String category,
+    required String imageUrl,
     required bool favorite,
     required String description,
     required int duration,
   })  : title = Value(title),
         category = Value(category),
+        imageUrl = Value(imageUrl),
         favorite = Value(favorite),
         description = Value(description),
         duration = Value(duration);
@@ -265,6 +293,7 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
     Expression<int>? idRecipe,
     Expression<String>? title,
     Expression<String>? category,
+    Expression<String>? imageUrl,
     Expression<bool>? favorite,
     Expression<String>? description,
     Expression<int>? duration,
@@ -273,6 +302,7 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
       if (idRecipe != null) 'id_recipe': idRecipe,
       if (title != null) 'Title': title,
       if (category != null) 'Category': category,
+      if (imageUrl != null) 'ImageUrl': imageUrl,
       if (favorite != null) 'Favorite': favorite,
       if (description != null) 'Description': description,
       if (duration != null) 'Duration': duration,
@@ -283,6 +313,7 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
       {Value<int>? idRecipe,
       Value<String>? title,
       Value<String>? category,
+      Value<String>? imageUrl,
       Value<bool>? favorite,
       Value<String>? description,
       Value<int>? duration}) {
@@ -290,6 +321,7 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
       idRecipe: idRecipe ?? this.idRecipe,
       title: title ?? this.title,
       category: category ?? this.category,
+      imageUrl: imageUrl ?? this.imageUrl,
       favorite: favorite ?? this.favorite,
       description: description ?? this.description,
       duration: duration ?? this.duration,
@@ -307,6 +339,9 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
     }
     if (category.present) {
       map['Category'] = Variable<String>(category.value);
+    }
+    if (imageUrl.present) {
+      map['ImageUrl'] = Variable<String>(imageUrl.value);
     }
     if (favorite.present) {
       map['Favorite'] = Variable<bool>(favorite.value);
@@ -326,6 +361,7 @@ class RecipeCompanion extends UpdateCompanion<RecipeData> {
           ..write('idRecipe: $idRecipe, ')
           ..write('title: $title, ')
           ..write('category: $category, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('favorite: $favorite, ')
           ..write('description: $description, ')
           ..write('duration: $duration')

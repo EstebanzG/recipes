@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:toastification/toastification.dart';
 import '../../data/dto/ingredient_detail_dto.dart';
 import '../../data/dto/recipe_detail_dto.dart';
@@ -23,6 +26,7 @@ class FormPage extends StatefulWidget {
 
 class _FormPageState extends State<FormPage> {
   final _formKey = GlobalKey<FormState>();
+  File? _imageFile;
   final RecipeService recipeService = RecipeService();
   final TextEditingController titleInputController = TextEditingController();
   final TextEditingController categoryInputController = TextEditingController();
@@ -45,6 +49,9 @@ class _FormPageState extends State<FormPage> {
       titleInputController.text = widget.recipe!.title;
       categoryInputController.text = widget.recipe!.category;
       durationInputController.text = widget.recipe!.duration.toString();
+      if (widget.recipe?.imageUrl != "") {
+        _imageFile = File(widget.recipe!.imageUrl ?? "");
+      }
       descriptionInputController.text = widget.recipe!.description;
       if (widget.recipe!.ingredients.isNotEmpty) {
         ingredients = List.from(widget.recipe!.ingredients);
@@ -88,6 +95,7 @@ class _FormPageState extends State<FormPage> {
       titleInputController.text,
       categoryInputController.text,
       descriptionInputController.text,
+      _imageFile?.path,
       int.tryParse(durationInputController.text) ?? 0,
       List.from(ingredients),
     );
@@ -111,6 +119,17 @@ class _FormPageState extends State<FormPage> {
     Navigator.pop(context);
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,28 +151,7 @@ class _FormPageState extends State<FormPage> {
   }
 
   Widget buildHeader(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          height: 350,
-          color: const Color.fromRGBO(217, 217, 217, 100),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.black,
-              size: 35.0,
-              semanticLabel: 'Retour',
-            ),
-          ),
-        ),
-      ],
-    );
+    return AppBar(title: const Text("Nouvelle recette"));
   }
 
   Widget buildFormFields(BuildContext context) {
@@ -161,6 +159,7 @@ class _FormPageState extends State<FormPage> {
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
+          _buildImagePicker(),
           TextFormField(
             controller: titleInputController,
             decoration: const InputDecoration(
@@ -216,6 +215,9 @@ class _FormPageState extends State<FormPage> {
           const SizedBox(
             height: 15,
           ),
+          const SizedBox(
+            height: 15,
+          ),
           ElevatedButton.icon(
             onPressed: duplicateIngredient,
             icon: const Icon(Icons.add_circle_outlined),
@@ -253,21 +255,37 @@ class _FormPageState extends State<FormPage> {
     );
   }
 
+  Widget _buildImagePicker() {
+    return Column(
+      children: [
+        if (_imageFile != null)
+          Image.file(
+            _imageFile!,
+            height: 100,
+            width: 100,
+            fit: BoxFit.cover,
+          ),
+        ElevatedButton(
+          onPressed: _pickImage,
+          child: const Text('Choisir une image'),
+        ),
+      ],
+    );
+  }
+
   void buildToastMissingIngredientWidget(BuildContext context) {
     toastification.show(
       context: context,
       title: RichText(
         text: const TextSpan(
             text: "Information manquante",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.black)),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
       ),
       description: RichText(
         text: TextSpan(
             text: "Au moins un ingrédient est nécessaire",
             style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade700)),
+                fontWeight: FontWeight.w600, color: Colors.grey.shade700)),
       ),
       autoCloseDuration: const Duration(seconds: 3),
       type: ToastificationType.error,

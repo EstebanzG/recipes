@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../data/dto/recipe_detail_dto.dart';
@@ -37,10 +39,15 @@ class _DetailPageState extends State<DetailPage> {
           child: Column(children: [
             Stack(
               children: [
-                Container(
-                  height: 350,
-                  color: const Color.fromRGBO(217, 217, 217, 100),
-                ),
+                if (localRecipe.imageUrl != "")
+                  Image.file(
+                    File(localRecipe.imageUrl!),
+                  )
+                else
+                  Container(
+                    height: 350,
+                    color: const Color.fromRGBO(217, 217, 217, 100),
+                  ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Flex(

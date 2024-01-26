@@ -7,6 +7,8 @@ class Recipe extends Table {
 
   TextColumn get category => text().named('Category')();
 
+  TextColumn get imageUrl => text().named('ImageUrl')();
+
   BoolColumn get favorite => boolean().named('Favorite')();
 
   TextColumn get description => text().named('Description')();
