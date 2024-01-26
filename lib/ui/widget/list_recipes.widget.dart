@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipes/data/const/categories.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 import 'package:recipes/src/services/recipe_service.dart';
 
@@ -40,8 +41,11 @@ class _ListRecipesState extends State<ListRecipes> {
 
   void reloadFilteredRecipes() {
     setState(() {
-      filteredRecipes = recipeService.getAllRecipesByNameAndCategory(
-          widget.recipes, searchBarController.text, selectedCategory);
+      filteredRecipes = recipeService.filterRecipesByNameAndCategory(
+        widget.recipes,
+        searchBarController.text,
+        selectedCategory,
+      );
     });
   }
 
@@ -133,7 +137,7 @@ class _ListRecipesState extends State<ListRecipes> {
         direction: Axis.horizontal,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          for (var category in RecipeDetailDto.CATEGORIES)
+          for (var category in Categories.allUnits)
             ActionChip(
               label: Text(category),
               onPressed: () {
@@ -145,7 +149,7 @@ class _ListRecipesState extends State<ListRecipes> {
                 reloadFilteredRecipes();
               },
               backgroundColor:
-                  selectedCategory == category ? Colors.grey.shade400 : null,
+              selectedCategory == category ? Colors.grey.shade400 : null,
             ),
         ],
       ),
@@ -159,10 +163,10 @@ class _ListRecipesState extends State<ListRecipes> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
-            childAspectRatio: 0.80
+          crossAxisCount: 2,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+          childAspectRatio: 0.8,
         ),
         itemCount: filteredRecipes.length,
         itemBuilder: (context, index) {

@@ -55,24 +55,14 @@ class RecipeRepository implements IRecipeRepository {
   }
 
   @override
-  Future<void> insertRecipeWithIngredients(RecipeDetailDto recipe) async {
-    var recipeId =
-        await database.into(database.recipe).insert(RecipeCompanion.insert(
-              title: recipe.title,
-              imageUrl: recipe.imageUrl ?? "",
-              category: recipe.category,
-              favorite: recipe.favorite,
-              description: recipe.description,
-              duration: recipe.duration,
-            ));
-//todo change repository
-    for (var ingredient in recipe.ingredients) {
-      database.into(database.ingredient).insert(IngredientCompanion.insert(
-            idRecipe: recipeId,
-            name: ingredient.name,
-            quantity: ingredient.quantity ?? 0,
-            unit: ingredient.unit,
-          ));
-    }
+  Future<int> insertRecipeWithIngredients(RecipeDetailDto recipe) async {
+    return await database.into(database.recipe).insert(RecipeCompanion.insert(
+          title: recipe.title,
+          imageUrl: recipe.imageUrl ?? "",
+          category: recipe.category,
+          favorite: recipe.favorite,
+          description: recipe.description,
+          duration: recipe.duration,
+        ));
   }
 }

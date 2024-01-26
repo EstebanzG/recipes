@@ -1,19 +1,19 @@
 import 'package:recipes/data/dto/ingredient_detail_dto.dart';
 import 'package:recipes/data/dto/recipe_detail_dto.dart';
 import 'package:recipes/src/repositories/recipe_repository.dart';
+import 'package:recipes/src/services/ingredient_service.dart';
 
 import '../../data/database/database.dart';
-import '../repositories/ingredient_repository.dart';
 
 class RecipeService {
   RecipeRepository recipeRepository = RecipeRepository();
-  IngredientRepository ingredientRepository = IngredientRepository();
+  IngredientService ingredientService = IngredientService();
 
   Future<List<RecipeData>> getAllRecipes() async {
     return await recipeRepository.getAll();
   }
 
-  List<RecipeDetailDto> getAllRecipesByNameAndCategory(
+  List<RecipeDetailDto> filterRecipesByNameAndCategory(
       List<RecipeDetailDto> recipes, String name, String category) {
     return recipes
         .where((recipe) =>
@@ -22,23 +22,28 @@ class RecipeService {
         .toList();
   }
 
-  void createNewRecipe(RecipeDetailDto recipeDto) {
-    recipeRepository.insertRecipeWithIngredients(recipeDto);
+  List<RecipeDetailDto> filterRecipesByFavorite(List<RecipeDetailDto> recipes) {
+    return recipes.where((recipe) => recipe.favorite == true).toList();
+  }
+
+  Future<void> createNewRecipe(RecipeDetailDto recipeDto) async {
+    var recipeId =
+        await recipeRepository.insertRecipeWithIngredients(recipeDto);
+    ingredientService.insertAll(recipeDto.ingredients, recipeId);
   }
 
   void updateRecipe(RecipeDetailDto recipeDto) {
     recipeRepository.update(recipeDto);
-    ingredientRepository.updates(
-        recipeDto.ingredients, recipeDto.idRecipe ?? 0);
+    ingredientService.updateAll(recipeDto.ingredients, recipeDto.idRecipe ?? 0);
   }
 
   void deleteRecipe(RecipeDetailDto recipeDto) {
-    ingredientRepository.deleteAllIngredientFromRecipe(recipeDto);
+    ingredientService.deleteAllIngredientFromRecipe(recipeDto);
     recipeRepository.delete(recipeDto);
   }
 
   void deleteIngredients(List<IngredientDetailDto> ingredients) {
-    ingredientRepository.deleteAll(ingredients);
+    ingredientService.deleteAll(ingredients);
   }
 
   RecipeDetailDto createRecipeDtoFromData(
@@ -57,7 +62,16 @@ class RecipeService {
             .toList());
   }
 
-  List<RecipeDetailDto> getFavoriteRecipes(List<RecipeDetailDto> recipes) {
-    return recipes.where((recipe) => recipe.favorite == true).toList();
+  Future<List<RecipeDetailDto>> createRecipesDto(
+      List<RecipeData> recipes) async {
+    List<RecipeDetailDto> recipesDto = [];
+    for (var recipe in recipes) {
+      List<IngredientData> recipeIngredients =
+          await ingredientService.getIngredientsByRecipeId(recipe.idRecipe);
+
+      recipesDto.add(createRecipeDtoFromData(recipe, recipeIngredients));
+    }
+
+    return recipesDto;
   }
 }

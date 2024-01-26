@@ -50,8 +50,8 @@ class RecipeCard extends StatelessWidget {
             _buildTopContainer(),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Flex(
-                direction: Axis.vertical,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                     height: 60, // Adjust the height according to your design
@@ -94,9 +94,7 @@ class RecipeCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                onPressed: () {
-                  deleteRecipe();
-                },
+                onPressed: deleteRecipe,
                 icon: const Icon(
                   Icons.delete_forever_outlined,
                   color: Colors.white,
@@ -116,7 +114,7 @@ class RecipeCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Icon(Icons.timer_outlined),
-        Text(recipe.duration.toString()),
+        Text("${recipe.duration} mins"),
       ],
     );
   }

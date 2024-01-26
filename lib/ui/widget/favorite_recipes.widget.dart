@@ -38,7 +38,7 @@ class _FavoriteRecipesState extends State<FavoriteRecipes> {
 
   void _updateFavoriteRecipes() {
     setState(() {
-      favoriteRecipes = recipeService.getFavoriteRecipes(widget.recipes);
+      favoriteRecipes = recipeService.filterRecipesByFavorite(widget.recipes);
     });
   }
 

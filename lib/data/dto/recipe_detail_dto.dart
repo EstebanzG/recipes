@@ -1,12 +1,7 @@
 import 'ingredient_detail_dto.dart';
 
 class RecipeDetailDto {
-  static const CATEGORIES = [
-    'Apéritif',
-    'Entrée',
-    'Plat',
-    'Sucré',
-  ];
+
 
   late int? idRecipe;
 

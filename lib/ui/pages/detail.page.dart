@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-
 import '../../data/dto/recipe_detail_dto.dart';
 import '../cubit/recipes.cubit.dart';
 import '../widget/detail_information.dart';
@@ -36,68 +34,79 @@ class _DetailPageState extends State<DetailPage> {
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
-          child: Column(children: [
-            Stack(
-              children: [
-                if (localRecipe.imageUrl != null && localRecipe.imageUrl != "")
-                  Image.file(
-                    File(localRecipe.imageUrl!),
-                  )
-                else
-                  Container(
-                    height: 350,
-                    color: const Color.fromRGBO(217, 217, 217, 100),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Flex(
-                    direction: Axis.horizontal,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_rounded,
-                          color: Colors.black,
-                          size: 35.0,
-                          semanticLabel: 'Retour',
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          var updatedRecipe = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => FormPage(
-                                recipe: localRecipe,
-                                recipesCubit: widget.recipesCubit,
-                              ),
-                            ),
-                          );
+          child: Column(
+            children: [
+              _buildImageStack(),
+              DetailInformation(recipe: localRecipe, recipesCubit: widget.recipesCubit),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-                          if (updatedRecipe != null) {
-                           setState(() {
-                             localRecipe = updatedRecipe;
-                           });
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.mode_edit_outline,
-                          color: Colors.black,
-                          size: 35.0,
-                          semanticLabel: 'Modifier la recette',
-                        ),
-                      ),
-                    ],
+  Widget _buildImageStack() {
+    return Stack(
+      children: [
+        _buildRecipeImage(),
+        _buildTopBar(),
+      ],
+    );
+  }
+
+  Widget _buildRecipeImage() {
+    return localRecipe.imageUrl != null && localRecipe.imageUrl != ""
+        ? Image.file(File(localRecipe.imageUrl!))
+        : Container(
+      height: 350,
+      color: const Color.fromRGBO(217, 217, 217, 100),
+    );
+  }
+
+  Widget _buildTopBar() {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Flex(
+        direction: Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.black,
+              size: 35.0,
+              semanticLabel: 'Retour',
+            ),
+          ),
+          IconButton(
+            onPressed: () async {
+              var updatedRecipe = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FormPage(
+                    recipe: localRecipe,
+                    recipesCubit: widget.recipesCubit,
                   ),
                 ),
-              ],
+              );
+
+              if (updatedRecipe != null) {
+                setState(() {
+                  localRecipe = updatedRecipe;
+                });
+              }
+            },
+            icon: const Icon(
+              Icons.mode_edit_outline,
+              color: Colors.black,
+              size: 35.0,
+              semanticLabel: 'Modifier la recette',
             ),
-            DetailInformation(recipe: localRecipe, recipesCubit: widget.recipesCubit)
-          ]),
-        ),
+          ),
+        ],
       ),
     );
   }

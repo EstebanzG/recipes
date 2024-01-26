@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:recipes/data/dto/ingredient_detail_dto.dart';
+
+import '../../data/const/measure_units.dart';
+import '../../data/dto/ingredient_detail_dto.dart';
 
 class IngredientForm extends StatefulWidget {
   final IngredientDetailDto ingredient;
@@ -56,52 +58,51 @@ class _IngredientFormState extends State<IngredientForm> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(width: 1, color: Colors.grey.shade200),
-        )
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 10),
-        child: Flex(
-          direction: Axis.horizontal,
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Column(
-              children: [
-                buildNameTextField(),
-                buildQuantityAndUnitFields(),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildNameTextField(),
+                  const SizedBox(height: 5),
+                  _buildQuantityAndUnitFields(),
+                ],
+              ),
             ),
-            buildDeleteButton(),
+            _buildDeleteButton(),
           ],
         ),
       ),
     );
   }
 
-  Widget buildNameTextField() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.5,
-      child: TextFormField(
-        controller: nameController,
-        onChanged: (_) => updateIngredient(),
-        decoration: const InputDecoration(
-          hintText: 'Quel ingrédient ajouter ?',
-          labelText: 'Nom de l\'ingredient',
-          prefixIcon: Icon(Icons.set_meal_outlined),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Le nom de l\'ingredient est obligatoire';
-          }
-          return null;
-        },
+  Widget _buildNameTextField() {
+    return TextFormField(
+      controller: nameController,
+      onChanged: (_) => updateIngredient(),
+      decoration: const InputDecoration(
+        hintText: 'Quel ingrédient ajouter ?',
+        labelText: 'Nom de l\'ingredient',
+        prefixIcon: Icon(Icons.set_meal_outlined),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Le nom de l\'ingredient est obligatoire';
+        }
+        return null;
+      },
     );
   }
 
-  Widget buildQuantityAndUnitFields() {
-    return Flex(
-      direction: Axis.horizontal,
+  Widget _buildQuantityAndUnitFields() {
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
@@ -125,15 +126,16 @@ class _IngredientFormState extends State<IngredientForm> {
             },
           ),
         ),
+        const SizedBox(width: 10),
         DropdownMenu(
           width: MediaQuery.of(context).size.width / 2.5,
           controller: unitController,
-          initialSelection: IngredientDetailDto.UNITS.first,
+          initialSelection: MeasureUnits.allUnits.first,
           inputDecorationTheme: const InputDecorationTheme(
             border: InputBorder.none,
           ),
           onSelected: (_) => updateIngredient(),
-          dropdownMenuEntries: IngredientDetailDto.UNITS
+          dropdownMenuEntries: MeasureUnits.allUnits
               .map<DropdownMenuEntry<String>>((String value) {
             return DropdownMenuEntry<String>(value: value, label: value);
           }).toList(),
@@ -142,12 +144,10 @@ class _IngredientFormState extends State<IngredientForm> {
     );
   }
 
-  Widget buildDeleteButton() {
+  Widget _buildDeleteButton() {
     return IconButton(
       onPressed: deleteIngredient,
-      icon: const Icon(
-        Icons.delete,
-      ),
+      icon: const Icon(Icons.delete),
     );
   }
 }

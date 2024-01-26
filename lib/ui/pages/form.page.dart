@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:recipes/data/const/categories.dart';
 import 'package:toastification/toastification.dart';
 import '../../data/dto/ingredient_detail_dto.dart';
 import '../../data/dto/recipe_detail_dto.dart';
@@ -60,9 +61,10 @@ class _FormPageState extends State<FormPage> {
   }
 
   void deleteIngredient(IngredientDetailDto ingredient) {
-    ingredients.remove(ingredient);
-    ingredientsToDelete.add(ingredient);
-    setState(() {});
+    setState(() {
+      ingredients.remove(ingredient);
+      ingredientsToDelete.add(ingredient);
+    });
   }
 
   int getNextId() {
@@ -182,7 +184,7 @@ class _FormPageState extends State<FormPage> {
               border: InputBorder.none,
             ),
             hintText: 'Catégorie',
-            dropdownMenuEntries: RecipeDetailDto.CATEGORIES
+            dropdownMenuEntries: Categories.allUnits
                 .map<DropdownMenuEntry<String>>((String value) {
               return DropdownMenuEntry<String>(value: value, label: value);
             }).toList(),

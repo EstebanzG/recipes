@@ -18,28 +18,30 @@ class IngredientRepository implements IIngredientRepository {
   }
 
   @override
-  Future<List<IngredientData>>? getByRecipeId(int id) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> insert(IngredientData ingredientData) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> updates(
-      List<IngredientDetailDto> ingredients, int idRecipe) async {
-    for (var ingredient in ingredients) {
-      IngredientCompanion ingredientCompanion = IngredientCompanion.insert(
-          idRecipe: idRecipe,
+  Future<void> insert(IngredientDetailDto ingredient, int recipeId) async {
+    database.into(database.ingredient).insert(IngredientCompanion.insert(
+          idRecipe: recipeId,
           name: ingredient.name,
           quantity: ingredient.quantity ?? 0,
-          unit: ingredient.unit);
+          unit: ingredient.unit,
+        ));
+  }
+
+  @override
+  Future<void> updateAll(
+      List<IngredientDetailDto> ingredients, int idRecipe) async {
+    for (var ingredient in ingredients) {
+      IngredientCompanion ingredientCompanion;
 
       if (ingredient.idIngredient != null) {
         ingredientCompanion = IngredientCompanion.insert(
             idIngredient: Value(ingredient.idIngredient ?? 0),
+            idRecipe: idRecipe,
+            name: ingredient.name,
+            quantity: ingredient.quantity ?? 0,
+            unit: ingredient.unit);
+      } else {
+        ingredientCompanion = IngredientCompanion.insert(
             idRecipe: idRecipe,
             name: ingredient.name,
             quantity: ingredient.quantity ?? 0,
@@ -60,6 +62,19 @@ class IngredientRepository implements IIngredientRepository {
       database.ingredient.deleteOne(IngredientCompanion(
         idIngredient: Value(ingredient.idIngredient ?? 0),
       ));
+    }
+  }
+
+  Future<List<IngredientData>> getIngredientsByRecipeId(int recipeId) async {
+    return await (database.ingredient.select()
+          ..where((ingredient) => ingredient.idRecipe.equals(recipeId)))
+        .get();
+  }
+
+  Future<void> insertAll(
+      List<IngredientDetailDto> ingredients, int recipeId) async {
+    for (var ingredient in ingredients) {
+      insert(ingredient, recipeId);
     }
   }
 }

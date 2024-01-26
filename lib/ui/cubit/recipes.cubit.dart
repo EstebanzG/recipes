@@ -17,7 +17,7 @@ class RecipesCubit extends Cubit<RecipesState> {
     try {
       emit(const LoadingState<RecipesStateData>());
       final List<RecipeData> recipes = await recipeService.getAllRecipes();
-      setState(await createRecipesDto(recipes));
+      setState(await recipeService.createRecipesDto(recipes));
     } on Exception catch (exception) {
       emit(FailureState<RecipesStateData>(message: exception.toString()));
     }
@@ -50,20 +50,6 @@ class RecipesCubit extends Cubit<RecipesState> {
     recipes.removeWhere((element) => element.idRecipe == recipe.idRecipe);
 
     setState(List<RecipeDetailDto>.from(recipes));
-  }
-
-  Future<List<RecipeDetailDto>> createRecipesDto(
-      List<RecipeData> recipes) async {
-    List<RecipeDetailDto> recipesDto = [];
-    for (var recipe in recipes) {
-      List<IngredientData> recipeIngredients =
-          await ingredientService.getIngredientsByRecipeId(recipe.idRecipe);
-
-      recipesDto.add(
-          recipeService.createRecipeDtoFromData(recipe, recipeIngredients));
-    }
-
-    return recipesDto;
   }
 
   void setState(List<RecipeDetailDto> recipes) {

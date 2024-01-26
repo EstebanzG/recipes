@@ -43,7 +43,7 @@ class _DetailInformationState extends State<DetailInformation> {
     Share.share(widget.recipe.toString());
   }
 
-  Widget buildInfoItem(IconData icon, String text) {
+  Widget _buildInfoItem(IconData icon, String text) {
     return Flex(
       direction: Axis.vertical,
       children: [
@@ -68,7 +68,7 @@ class _DetailInformationState extends State<DetailInformation> {
     );
   }
 
-  Widget buildActionItem(IconData icon, String label, Function() onPressed) {
+  Widget _buildActionItem(IconData icon, String label, Function() onPressed) {
     return Flex(
       direction: Axis.vertical,
       children: [
@@ -93,7 +93,7 @@ class _DetailInformationState extends State<DetailInformation> {
     );
   }
 
-  Widget buildIngredientsList(List<IngredientDetailDto> ingredients) {
+  Widget _buildIngredientsList(List<IngredientDetailDto> ingredients) {
     return Column(
       children: [
         Row(
@@ -123,7 +123,7 @@ class _DetailInformationState extends State<DetailInformation> {
     );
   }
 
-  Widget buildDescription(String description) {
+  Widget _buildDescription(String description) {
     return Column(
       children: [
         Row(
@@ -189,7 +189,6 @@ class _DetailInformationState extends State<DetailInformation> {
                         )
                     ],
                   ),
-
                 ),
               ),
             ],
@@ -201,24 +200,24 @@ class _DetailInformationState extends State<DetailInformation> {
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              buildInfoItem(
+              _buildInfoItem(
                   Icons.timer_outlined, '${widget.recipe.duration} minutes'),
-              buildActionItem(
+              _buildActionItem(
                 isFavorite ? Icons.favorite : Icons.favorite_border,
                 isFavorite ? 'Supprimer des favoris' : 'Ajouter aux favoris',
                 manageFavorite,
               ),
-              buildActionItem(Icons.share, 'Partager', shareRecipe),
+              _buildActionItem(Icons.share, 'Partager', shareRecipe),
             ],
           ),
           const SizedBox(
             height: 15,
           ),
-          buildIngredientsList(widget.recipe.ingredients),
+          _buildIngredientsList(widget.recipe.ingredients),
           const SizedBox(
             height: 15,
           ),
-          buildDescription(widget.recipe.description),
+          _buildDescription(widget.recipe.description),
         ],
       ),
     );
