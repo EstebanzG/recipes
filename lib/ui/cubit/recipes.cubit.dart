@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recipes/data/database/database.dart';
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
-import 'package:recipes/src/services/ingredient_service.dart';
-import 'package:recipes/ui/cubit/recipes.states.dart';
+import 'package:petit_chef/data/database/database.dart';
+import 'package:petit_chef/data/dto/recipe_detail_dto.dart';
+import 'package:petit_chef/src/services/ingredient_service.dart';
+import 'package:petit_chef/ui/cubit/recipes.states.dart';
 
 import '../../src/services/recipe_service.dart';
 import 'cubit.state.dart';

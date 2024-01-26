@@ -1,4 +1,4 @@
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
+import 'package:petit_chef/data/dto/recipe_detail_dto.dart';
 
 import '../../data/database/database.dart';
 import '../../data/dto/ingredient_detail_dto.dart';

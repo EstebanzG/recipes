@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
+import 'package:petit_chef/data/dto/recipe_detail_dto.dart';
 
 import '../cubit/cubit.state.dart';
 import '../cubit/recipes.cubit.dart';

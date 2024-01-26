@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:recipes/data/models/recipe.dart';
+import 'package:petit_chef/data/models/recipe.dart';
 
 class Ingredient extends Table {
   IntColumn get idIngredient => integer().autoIncrement()();

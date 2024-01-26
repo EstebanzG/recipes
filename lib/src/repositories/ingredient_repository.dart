@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:recipes/data/database/database.dart';
-import 'package:recipes/data/dto/ingredient_detail_dto.dart';
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
-import 'package:recipes/src/repositories/ingredient_repository_interface.dart';
+import 'package:petit_chef/data/database/database.dart';
+import 'package:petit_chef/data/dto/ingredient_detail_dto.dart';
+import 'package:petit_chef/data/dto/recipe_detail_dto.dart';
+import 'package:petit_chef/src/repositories/ingredient_repository_interface.dart';
 
 class IngredientRepository implements IIngredientRepository {
   @override

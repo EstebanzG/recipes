@@ -1,7 +1,7 @@
-import 'package:recipes/data/dto/ingredient_detail_dto.dart';
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
-import 'package:recipes/src/repositories/recipe_repository.dart';
-import 'package:recipes/src/services/ingredient_service.dart';
+import 'package:petit_chef/data/dto/ingredient_detail_dto.dart';
+import 'package:petit_chef/data/dto/recipe_detail_dto.dart';
+import 'package:petit_chef/src/repositories/recipe_repository.dart';
+import 'package:petit_chef/src/services/ingredient_service.dart';
 
 import '../../data/database/database.dart';
 

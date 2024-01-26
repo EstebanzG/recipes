@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recipes/data/dto/ingredient_detail_dto.dart';
+import 'package:petit_chef/data/dto/ingredient_detail_dto.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../data/dto/recipe_detail_dto.dart';

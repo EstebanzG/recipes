@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:recipes/data/const/categories.dart';
+import 'package:petit_chef/data/const/categories.dart';
 import 'package:toastification/toastification.dart';
 import '../../data/dto/ingredient_detail_dto.dart';
 import '../../data/dto/recipe_detail_dto.dart';

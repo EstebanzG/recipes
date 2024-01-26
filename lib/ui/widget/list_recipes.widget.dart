@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recipes/data/const/categories.dart';
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
-import 'package:recipes/src/services/recipe_service.dart';
+import 'package:petit_chef/data/const/categories.dart';
+import 'package:petit_chef/data/dto/recipe_detail_dto.dart';
+import 'package:petit_chef/src/services/recipe_service.dart';
 
 import '../cubit/recipes.cubit.dart';
 import 'recipe_card.widget.dart';
