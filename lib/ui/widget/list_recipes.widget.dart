@@ -159,17 +159,16 @@ class _ListRecipesState extends State<ListRecipes> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
+            crossAxisCount: 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            childAspectRatio: 0.80
         ),
         itemCount: filteredRecipes.length,
         itemBuilder: (context, index) {
-          return SizedBox(
-            child: RecipeCard(
-              recipe: filteredRecipes[index],
-              recipesCubit: BlocProvider.of<RecipesCubit>(context),
-            ),
+          return RecipeCard(
+            recipe: filteredRecipes[index],
+            recipesCubit: BlocProvider.of<RecipesCubit>(context),
           );
         },
       ),

@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:recipes/data/dto/recipe_detail_dto.dart';
 
+import '../../data/dto/recipe_detail_dto.dart';
 import '../../src/services/recipe_service.dart';
 import '../cubit/recipes.cubit.dart';
 import '../pages/detail.page.dart';
@@ -38,29 +38,34 @@ class RecipeCard extends StatelessWidget {
           ),
         );
       },
-      child: SizedBox(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        width: 175,
         height: 200,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          width: 175,
-          child: Column(
-            children: [
-              _buildTopContainer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(recipe.title),
-                    _buildDurationRow(),
-                  ],
-                ),
+        child: Column(
+          children: [
+            _buildTopContainer(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Flex(
+                direction: Axis.vertical,
+                children: [
+                  SizedBox(
+                    height: 60, // Adjust the height according to your design
+                    child: Text(
+                      recipe.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  _buildDurationRow(),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -75,9 +80,12 @@ class RecipeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color.fromRGBO(217, 217, 217, 100),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-            image: recipe.imageUrl != "" ? DecorationImage(
+            image: recipe.imageUrl != ""
+                ? DecorationImage(
               image: FileImage(File(recipe.imageUrl ?? "")),
-            ) : null,
+              fit: BoxFit.fitWidth,
+            )
+                : null,
           ),
         ),
         Padding(
@@ -93,7 +101,7 @@ class RecipeCard extends StatelessWidget {
                   Icons.delete_forever_outlined,
                   color: Colors.white,
                   size: 20.0,
-                  semanticLabel: 'delete recipe',
+                  semanticLabel: 'Supprimer la recette',
                 ),
               ),
             ],

@@ -39,7 +39,7 @@ class _DetailPageState extends State<DetailPage> {
           child: Column(children: [
             Stack(
               children: [
-                if (localRecipe.imageUrl != "")
+                if (localRecipe.imageUrl != null && localRecipe.imageUrl != "")
                   Image.file(
                     File(localRecipe.imageUrl!),
                   )

@@ -178,14 +178,15 @@ class _DetailInformationState extends State<DetailInformation> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      TextSpan(
-                        text: " - ${widget.recipe.category}",
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                      if (widget.recipe.category != "")
+                        TextSpan(
+                          text: " - ${widget.recipe.category}",
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
                     ],
                   ),
 
